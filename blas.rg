@@ -51,13 +51,13 @@ terra get_raw_ptr_1d(rect: rect1d,
 end
 
 terra sdsdot_terra(
-	N : int
-	alpha : float
-	rectX : rect1d
-	rectY : rect1d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	N : int,
+	alpha : float,
+	rectX : rect1d,
+	rectY : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -66,12 +66,12 @@ terra sdsdot_terra(
 end
 
 terra dsdot_terra(
-	N : int
-	rectX : rect1d
-	rectY : rect1d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -80,12 +80,12 @@ terra dsdot_terra(
 end
 
 terra sdot_terra(
-	N : int
-	rectX : rect1d
-	rectY : rect1d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -94,12 +94,12 @@ terra sdot_terra(
 end
 
 terra ddot_terra(
-	N : int
-	rectX : rect1d
-	rectY : rect1d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -108,9 +108,9 @@ terra ddot_terra(
 end
 
 terra snrm2_terra(
-	N : int
-	rectX : rect1d
-	prX : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -118,9 +118,9 @@ terra snrm2_terra(
 end
 
 terra sasum_terra(
-	N : int
-	rectX : rect1d
-	prX : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -128,9 +128,9 @@ terra sasum_terra(
 end
 
 terra dnrm2_terra(
-	N : int
-	rectX : rect1d
-	prX : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -138,9 +138,9 @@ terra dnrm2_terra(
 end
 
 terra dasum_terra(
-	N : int
-	rectX : rect1d
-	prX : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -148,12 +148,12 @@ terra dasum_terra(
 end
 
 terra sswap_terra(
-	N : int
-	rectX : rect1d
-	rectY : rect1d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -162,12 +162,12 @@ terra sswap_terra(
 end
 
 terra scopy_terra(
-	N : int
-	rectX : rect1d
-	rectY : rect1d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -176,13 +176,13 @@ terra scopy_terra(
 end
 
 terra saxpy_terra(
-	N : int
-	alpha : float
-	rectX : rect1d
-	rectY : rect1d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	N : int,
+	alpha : float,
+	rectX : rect1d,
+	rectY : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -191,12 +191,12 @@ terra saxpy_terra(
 end
 
 terra dswap_terra(
-	N : int
-	rectX : rect1d
-	rectY : rect1d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -205,12 +205,12 @@ terra dswap_terra(
 end
 
 terra dcopy_terra(
-	N : int
-	rectX : rect1d
-	rectY : rect1d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -219,13 +219,13 @@ terra dcopy_terra(
 end
 
 terra daxpy_terra(
-	N : int
-	alpha : double
-	rectX : rect1d
-	rectY : rect1d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	N : int,
+	alpha : double,
+	rectX : rect1d,
+	rectY : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -234,14 +234,14 @@ terra daxpy_terra(
 end
 
 terra srot_terra(
-	N : int
-	rectX : rect1d
-	rectY : rect1d
-	c : float
-	s : float
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	c : float,
+	s : float,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -250,15 +250,15 @@ terra srot_terra(
 end
 
 terra srotm_terra(
-	N : int
-	rectX : rect1d
-	rectY : rect1d
-	rectP : rect1d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
-	fldY : c.legion_field_id_t
-	prP : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	rectP : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t,
+	prP : c.legion_physical_region_t,
 	fldP : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -268,14 +268,14 @@ terra srotm_terra(
 end
 
 terra drot_terra(
-	N : int
-	rectX : rect1d
-	rectY : rect1d
-	c : double
-	s : double
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	c : double,
+	s : double,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -284,15 +284,15 @@ terra drot_terra(
 end
 
 terra drotm_terra(
-	N : int
-	rectX : rect1d
-	rectY : rect1d
-	rectP : rect1d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
-	fldY : c.legion_field_id_t
-	prP : c.legion_physical_region_t
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	rectP : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t,
+	prP : c.legion_physical_region_t,
 	fldP : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -302,10 +302,10 @@ terra drotm_terra(
 end
 
 terra sscal_terra(
-	N : int
-	alpha : float
-	rectX : rect1d
-	prX : c.legion_physical_region_t
+	N : int,
+	alpha : float,
+	rectX : rect1d,
+	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -313,10 +313,10 @@ terra sscal_terra(
 end
 
 terra dscal_terra(
-	N : int
-	alpha : double
-	rectX : rect1d
-	prX : c.legion_physical_region_t
+	N : int,
+	alpha : double,
+	rectX : rect1d,
+	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -324,19 +324,19 @@ terra dscal_terra(
 end
 
 terra sgemv_terra(
-	TransA : int
-	M : int
-	N : int
-	alpha : float
-	rectA : rect2d
-	rectX : rect1d
-	beta : float
-	rectY : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	TransA : int,
+	M : int,
+	N : int,
+	alpha : float,
+	rectA : rect2d,
+	rectX : rect1d,
+	beta : float,
+	rectY : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -346,21 +346,21 @@ terra sgemv_terra(
 end
 
 terra sgbmv_terra(
-	TransA : int
-	M : int
-	N : int
-	KL : int
-	KU : int
-	alpha : float
-	rectA : rect2d
-	rectX : rect1d
-	beta : float
-	rectY : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	TransA : int,
+	M : int,
+	N : int,
+	KL : int,
+	KU : int,
+	alpha : float,
+	rectA : rect2d,
+	rectX : rect1d,
+	beta : float,
+	rectY : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -370,15 +370,15 @@ terra sgbmv_terra(
 end
 
 terra strmv_terra(
-	Uplo : int
-	TransA : int
-	Diag : int
-	N : int
-	rectA : rect2d
-	rectX : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	N : int,
+	rectA : rect2d,
+	rectX : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -387,16 +387,16 @@ terra strmv_terra(
 end
 
 terra stbmv_terra(
-	Uplo : int
-	TransA : int
-	Diag : int
-	N : int
-	K : int
-	rectA : rect2d
-	rectX : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	N : int,
+	K : int,
+	rectA : rect2d,
+	rectX : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -405,15 +405,15 @@ terra stbmv_terra(
 end
 
 terra strsv_terra(
-	Uplo : int
-	TransA : int
-	Diag : int
-	N : int
-	rectA : rect2d
-	rectX : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	N : int,
+	rectA : rect2d,
+	rectX : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -422,16 +422,16 @@ terra strsv_terra(
 end
 
 terra stbsv_terra(
-	Uplo : int
-	TransA : int
-	Diag : int
-	N : int
-	K : int
-	rectA : rect2d
-	rectX : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	N : int,
+	K : int,
+	rectA : rect2d,
+	rectX : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -440,19 +440,19 @@ terra stbsv_terra(
 end
 
 terra dgemv_terra(
-	TransA : int
-	M : int
-	N : int
-	alpha : double
-	rectA : rect2d
-	rectX : rect1d
-	beta : double
-	rectY : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	TransA : int,
+	M : int,
+	N : int,
+	alpha : double,
+	rectA : rect2d,
+	rectX : rect1d,
+	beta : double,
+	rectY : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -462,21 +462,21 @@ terra dgemv_terra(
 end
 
 terra dgbmv_terra(
-	TransA : int
-	M : int
-	N : int
-	KL : int
-	KU : int
-	alpha : double
-	rectA : rect2d
-	rectX : rect1d
-	beta : double
-	rectY : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	TransA : int,
+	M : int,
+	N : int,
+	KL : int,
+	KU : int,
+	alpha : double,
+	rectA : rect2d,
+	rectX : rect1d,
+	beta : double,
+	rectY : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -486,15 +486,15 @@ terra dgbmv_terra(
 end
 
 terra dtrmv_terra(
-	Uplo : int
-	TransA : int
-	Diag : int
-	N : int
-	rectA : rect2d
-	rectX : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	N : int,
+	rectA : rect2d,
+	rectX : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -503,16 +503,16 @@ terra dtrmv_terra(
 end
 
 terra dtbmv_terra(
-	Uplo : int
-	TransA : int
-	Diag : int
-	N : int
-	K : int
-	rectA : rect2d
-	rectX : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	N : int,
+	K : int,
+	rectA : rect2d,
+	rectX : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -521,15 +521,15 @@ terra dtbmv_terra(
 end
 
 terra dtrsv_terra(
-	Uplo : int
-	TransA : int
-	Diag : int
-	N : int
-	rectA : rect2d
-	rectX : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	N : int,
+	rectA : rect2d,
+	rectX : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -538,16 +538,16 @@ terra dtrsv_terra(
 end
 
 terra dtbsv_terra(
-	Uplo : int
-	TransA : int
-	Diag : int
-	N : int
-	K : int
-	rectA : rect2d
-	rectX : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	N : int,
+	K : int,
+	rectA : rect2d,
+	rectX : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -556,18 +556,18 @@ terra dtbsv_terra(
 end
 
 terra ssymv_terra(
-	Uplo : int
-	N : int
-	alpha : float
-	rectA : rect2d
-	rectX : rect1d
-	beta : float
-	rectY : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	Uplo : int,
+	N : int,
+	alpha : float,
+	rectA : rect2d,
+	rectX : rect1d,
+	beta : float,
+	rectY : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -577,19 +577,19 @@ terra ssymv_terra(
 end
 
 terra ssbmv_terra(
-	Uplo : int
-	N : int
-	K : int
-	alpha : float
-	rectA : rect2d
-	rectX : rect1d
-	beta : float
-	rectY : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	Uplo : int,
+	N : int,
+	K : int,
+	alpha : float,
+	rectA : rect2d,
+	rectX : rect1d,
+	beta : float,
+	rectY : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -599,17 +599,17 @@ terra ssbmv_terra(
 end
 
 terra sger_terra(
-	M : int
-	N : int
-	alpha : float
-	rectX : rect1d
-	rectY : rect1d
-	rectA : rect2d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
-	fldY : c.legion_field_id_t
-	prA : c.legion_physical_region_t
+	M : int,
+	N : int,
+	alpha : float,
+	rectX : rect1d,
+	rectY : rect1d,
+	rectA : rect2d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t,
+	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -619,14 +619,14 @@ terra sger_terra(
 end
 
 terra ssyr_terra(
-	Uplo : int
-	N : int
-	alpha : float
-	rectX : rect1d
-	rectA : rect2d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prA : c.legion_physical_region_t
+	Uplo : int,
+	N : int,
+	alpha : float,
+	rectX : rect1d,
+	rectA : rect2d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -635,14 +635,14 @@ terra ssyr_terra(
 end
 
 terra sspr_terra(
-	Uplo : int
-	N : int
-	alpha : float
-	rectX : rect1d
-	rectAp : rect1d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prAp : c.legion_physical_region_t
+	Uplo : int,
+	N : int,
+	alpha : float,
+	rectX : rect1d,
+	rectAp : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prAp : c.legion_physical_region_t,
 	fldAp : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -651,17 +651,17 @@ terra sspr_terra(
 end
 
 terra ssyr2_terra(
-	Uplo : int
-	N : int
-	alpha : float
-	rectX : rect1d
-	rectY : rect1d
-	rectA : rect2d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
-	fldY : c.legion_field_id_t
-	prA : c.legion_physical_region_t
+	Uplo : int,
+	N : int,
+	alpha : float,
+	rectX : rect1d,
+	rectY : rect1d,
+	rectA : rect2d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t,
+	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -671,17 +671,17 @@ terra ssyr2_terra(
 end
 
 terra sspr2_terra(
-	Uplo : int
-	N : int
-	alpha : float
-	rectX : rect1d
-	rectY : rect1d
-	rectA : rect2d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
-	fldY : c.legion_field_id_t
-	prA : c.legion_physical_region_t
+	Uplo : int,
+	N : int,
+	alpha : float,
+	rectX : rect1d,
+	rectY : rect1d,
+	rectA : rect2d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t,
+	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -691,18 +691,18 @@ terra sspr2_terra(
 end
 
 terra dsymv_terra(
-	Uplo : int
-	N : int
-	alpha : double
-	rectA : rect2d
-	rectX : rect1d
-	beta : double
-	rectY : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	Uplo : int,
+	N : int,
+	alpha : double,
+	rectA : rect2d,
+	rectX : rect1d,
+	beta : double,
+	rectY : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -712,19 +712,19 @@ terra dsymv_terra(
 end
 
 terra dsbmv_terra(
-	Uplo : int
-	N : int
-	K : int
-	alpha : double
-	rectA : rect2d
-	rectX : rect1d
-	beta : double
-	rectY : rect1d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
+	Uplo : int,
+	N : int,
+	K : int,
+	alpha : double,
+	rectA : rect2d,
+	rectX : rect1d,
+	beta : double,
+	rectY : rect1d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -734,17 +734,17 @@ terra dsbmv_terra(
 end
 
 terra dger_terra(
-	M : int
-	N : int
-	alpha : double
-	rectX : rect1d
-	rectY : rect1d
-	rectA : rect2d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
-	fldY : c.legion_field_id_t
-	prA : c.legion_physical_region_t
+	M : int,
+	N : int,
+	alpha : double,
+	rectX : rect1d,
+	rectY : rect1d,
+	rectA : rect2d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t,
+	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -754,14 +754,14 @@ terra dger_terra(
 end
 
 terra dsyr_terra(
-	Uplo : int
-	N : int
-	alpha : double
-	rectX : rect1d
-	rectA : rect2d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prA : c.legion_physical_region_t
+	Uplo : int,
+	N : int,
+	alpha : double,
+	rectX : rect1d,
+	rectA : rect2d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -770,14 +770,14 @@ terra dsyr_terra(
 end
 
 terra dspr_terra(
-	Uplo : int
-	N : int
-	alpha : double
-	rectX : rect1d
-	rectAp : rect1d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prAp : c.legion_physical_region_t
+	Uplo : int,
+	N : int,
+	alpha : double,
+	rectX : rect1d,
+	rectAp : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prAp : c.legion_physical_region_t,
 	fldAp : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -786,17 +786,17 @@ terra dspr_terra(
 end
 
 terra dsyr2_terra(
-	Uplo : int
-	N : int
-	alpha : double
-	rectX : rect1d
-	rectY : rect1d
-	rectA : rect2d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
-	fldY : c.legion_field_id_t
-	prA : c.legion_physical_region_t
+	Uplo : int,
+	N : int,
+	alpha : double,
+	rectX : rect1d,
+	rectY : rect1d,
+	rectA : rect2d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t,
+	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -806,17 +806,17 @@ terra dsyr2_terra(
 end
 
 terra dspr2_terra(
-	Uplo : int
-	N : int
-	alpha : double
-	rectX : rect1d
-	rectY : rect1d
-	rectA : rect2d
-	prX : c.legion_physical_region_t
-	fldX : c.legion_field_id_t
-	prY : c.legion_physical_region_t
-	fldY : c.legion_field_id_t
-	prA : c.legion_physical_region_t
+	Uplo : int,
+	N : int,
+	alpha : double,
+	rectX : rect1d,
+	rectY : rect1d,
+	rectA : rect2d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t,
+	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
 	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
@@ -826,21 +826,21 @@ terra dspr2_terra(
 end
 
 terra sgemm_terra(
-	TransA : int
-	TransB : int
-	M : int
-	N : int
-	K : int
-	alpha : float
-	rectA : rect2d
-	rectB : rect2d
-	beta : float
-	rectC : rect2d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prB : c.legion_physical_region_t
-	fldB : c.legion_field_id_t
-	prC : c.legion_physical_region_t
+	TransA : int,
+	TransB : int,
+	M : int,
+	N : int,
+	K : int,
+	alpha : float,
+	rectA : rect2d,
+	rectB : rect2d,
+	beta : float,
+	rectC : rect2d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prB : c.legion_physical_region_t,
+	fldB : c.legion_field_id_t,
+	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -850,20 +850,20 @@ terra sgemm_terra(
 end
 
 terra ssymm_terra(
-	Side : int
-	Uplo : int
-	M : int
-	N : int
-	alpha : float
-	rectA : rect2d
-	rectB : rect2d
-	beta : float
-	rectC : rect2d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prB : c.legion_physical_region_t
-	fldB : c.legion_field_id_t
-	prC : c.legion_physical_region_t
+	Side : int,
+	Uplo : int,
+	M : int,
+	N : int,
+	alpha : float,
+	rectA : rect2d,
+	rectB : rect2d,
+	beta : float,
+	rectC : rect2d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prB : c.legion_physical_region_t,
+	fldB : c.legion_field_id_t,
+	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -873,17 +873,17 @@ terra ssymm_terra(
 end
 
 terra ssyrk_terra(
-	Uplo : int
-	Trans : int
-	N : int
-	K : int
-	alpha : float
-	rectA : rect2d
-	beta : float
-	rectC : rect2d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prC : c.legion_physical_region_t
+	Uplo : int,
+	Trans : int,
+	N : int,
+	K : int,
+	alpha : float,
+	rectA : rect2d,
+	beta : float,
+	rectC : rect2d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -892,20 +892,20 @@ terra ssyrk_terra(
 end
 
 terra ssyr2k_terra(
-	Uplo : int
-	Trans : int
-	N : int
-	K : int
-	alpha : float
-	rectA : rect2d
-	rectB : rect2d
-	beta : float
-	rectC : rect2d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prB : c.legion_physical_region_t
-	fldB : c.legion_field_id_t
-	prC : c.legion_physical_region_t
+	Uplo : int,
+	Trans : int,
+	N : int,
+	K : int,
+	alpha : float,
+	rectA : rect2d,
+	rectB : rect2d,
+	beta : float,
+	rectC : rect2d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prB : c.legion_physical_region_t,
+	fldB : c.legion_field_id_t,
+	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -915,18 +915,18 @@ terra ssyr2k_terra(
 end
 
 terra strmm_terra(
-	Side : int
-	Uplo : int
-	TransA : int
-	Diag : int
-	M : int
-	N : int
-	alpha : float
-	rectA : rect2d
-	rectB : rect2d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prB : c.legion_physical_region_t
+	Side : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	M : int,
+	N : int,
+	alpha : float,
+	rectA : rect2d,
+	rectB : rect2d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prB : c.legion_physical_region_t,
 	fldB : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -935,18 +935,18 @@ terra strmm_terra(
 end
 
 terra strsm_terra(
-	Side : int
-	Uplo : int
-	TransA : int
-	Diag : int
-	M : int
-	N : int
-	alpha : float
-	rectA : rect2d
-	rectB : rect2d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prB : c.legion_physical_region_t
+	Side : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	M : int,
+	N : int,
+	alpha : float,
+	rectA : rect2d,
+	rectB : rect2d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prB : c.legion_physical_region_t,
 	fldB : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -955,21 +955,21 @@ terra strsm_terra(
 end
 
 terra dgemm_terra(
-	TransA : int
-	TransB : int
-	M : int
-	N : int
-	K : int
-	alpha : double
-	rectA : rect2d
-	rectB : rect2d
-	beta : double
-	rectC : rect2d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prB : c.legion_physical_region_t
-	fldB : c.legion_field_id_t
-	prC : c.legion_physical_region_t
+	TransA : int,
+	TransB : int,
+	M : int,
+	N : int,
+	K : int,
+	alpha : double,
+	rectA : rect2d,
+	rectB : rect2d,
+	beta : double,
+	rectC : rect2d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prB : c.legion_physical_region_t,
+	fldB : c.legion_field_id_t,
+	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -979,20 +979,20 @@ terra dgemm_terra(
 end
 
 terra dsymm_terra(
-	Side : int
-	Uplo : int
-	M : int
-	N : int
-	alpha : double
-	rectA : rect2d
-	rectB : rect2d
-	beta : double
-	rectC : rect2d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prB : c.legion_physical_region_t
-	fldB : c.legion_field_id_t
-	prC : c.legion_physical_region_t
+	Side : int,
+	Uplo : int,
+	M : int,
+	N : int,
+	alpha : double,
+	rectA : rect2d,
+	rectB : rect2d,
+	beta : double,
+	rectC : rect2d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prB : c.legion_physical_region_t,
+	fldB : c.legion_field_id_t,
+	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -1002,17 +1002,17 @@ terra dsymm_terra(
 end
 
 terra dsyrk_terra(
-	Uplo : int
-	Trans : int
-	N : int
-	K : int
-	alpha : double
-	rectA : rect2d
-	beta : double
-	rectC : rect2d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prC : c.legion_physical_region_t
+	Uplo : int,
+	Trans : int,
+	N : int,
+	K : int,
+	alpha : double,
+	rectA : rect2d,
+	beta : double,
+	rectC : rect2d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -1021,20 +1021,20 @@ terra dsyrk_terra(
 end
 
 terra dsyr2k_terra(
-	Uplo : int
-	Trans : int
-	N : int
-	K : int
-	alpha : double
-	rectA : rect2d
-	rectB : rect2d
-	beta : double
-	rectC : rect2d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prB : c.legion_physical_region_t
-	fldB : c.legion_field_id_t
-	prC : c.legion_physical_region_t
+	Uplo : int,
+	Trans : int,
+	N : int,
+	K : int,
+	alpha : double,
+	rectA : rect2d,
+	rectB : rect2d,
+	beta : double,
+	rectC : rect2d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prB : c.legion_physical_region_t,
+	fldB : c.legion_field_id_t,
+	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -1044,18 +1044,18 @@ terra dsyr2k_terra(
 end
 
 terra dtrmm_terra(
-	Side : int
-	Uplo : int
-	TransA : int
-	Diag : int
-	M : int
-	N : int
-	alpha : double
-	rectA : rect2d
-	rectB : rect2d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prB : c.legion_physical_region_t
+	Side : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	M : int,
+	N : int,
+	alpha : double,
+	rectA : rect2d,
+	rectB : rect2d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prB : c.legion_physical_region_t,
 	fldB : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
@@ -1064,18 +1064,18 @@ terra dtrmm_terra(
 end
 
 terra dtrsm_terra(
-	Side : int
-	Uplo : int
-	TransA : int
-	Diag : int
-	M : int
-	N : int
-	alpha : double
-	rectA : rect2d
-	rectB : rect2d
-	prA : c.legion_physical_region_t
-	fldA : c.legion_field_id_t
-	prB : c.legion_physical_region_t
+	Side : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	M : int,
+	N : int,
+	alpha : double,
+	rectA : rect2d,
+	rectB : rect2d,
+	prA : c.legion_physical_region_t,
+	fldA : c.legion_field_id_t,
+	prB : c.legion_physical_region_t,
 	fldB : c.legion_field_id_t)
 
 	var rawA = get_raw_pointer_2d(rectA, prA, fldA)

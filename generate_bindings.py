@@ -103,7 +103,7 @@ class Func():
         cblas_args = ", ".join(cblas_args)
 
         terra_args = list(map(lambda a: "\n\t"+a, terra_args))
-        terra_args = "".join(terra_args)
+        terra_args = ",".join(terra_args)
         body.append(cblas_call % (self.name, cblas_args))
         body = list(map(lambda b: "\t"+b, body))
         body = "\n".join(body)
@@ -158,32 +158,32 @@ def parse_funcs(ns):
     return funcs
 
 
-if __name__ == '__main__':
-    # Find the location of the xml generator (castxml or gccxml)
-    generator_path, generator_name = utils.find_xml_generator()
+# if __name__ == '__main__':
+# Find the location of the xml generator (castxml or gccxml)
+generator_path, generator_name = utils.find_xml_generator()
 
-    # Configure the xml generator
-    xml_generator_config = parser.xml_generator_configuration_t(
-        xml_generator_path=generator_path,
-        xml_generator=generator_name)
+# Configure the xml generator
+xml_generator_config = parser.xml_generator_configuration_t(
+    xml_generator_path=generator_path,
+    xml_generator=generator_name)
 
-    # The c++ file we want to parse
-    filename = "/usr/include/cblas.h"
+# The c++ file we want to parse
+filename = "/usr/include/cblas.h"
 
-    # Parse the c++ file
-    decls = parser.parse([filename], xml_generator_config)
+# Parse the c++ file
+decls = parser.parse([filename], xml_generator_config)
 
-    # Get access to the global namespace
-    global_namespace = declarations.get_global_namespace(decls)
+# Get access to the global namespace
+global_namespace = declarations.get_global_namespace(decls)
 
-    funcs = parse_funcs(global_namespace)
-    terra_funcs = []
-    for func in funcs:
-        try:
-            terra_funcs.append(func.to_terra())
-        except UnboundLocalError:
-            print("Skipping:", func.name)
+funcs = parse_funcs(global_namespace)
+terra_funcs = []
+for func in funcs:
+    try:
+        terra_funcs.append(func.to_terra())
+    except UnboundLocalError:
+        print("Skipping:", func.name)
 
-    with open("blas.rg", 'w') as f:
-        f.write(header)
-        f.writelines(terra_funcs)
+with open("blas.rg", 'w') as f:
+    f.write(header)
+    f.writelines(terra_funcs)
