@@ -21,7 +21,7 @@ from pygccxml import parser
 from template import header
 
 Arg = namedtuple('Arg', ['name', 'type', 'pointer', 'const'])
-blas_types = ['s', 'd']
+blas_types = {'s': 'float', 'd': 'double'}
 #blas_types = ['s', 'd', 'c', 'z', 'cs', 'zd', 'sc', 'dz']
 vectors = ["X", "Y"]
 matrices = ["A", "B", "C"]
@@ -43,8 +43,9 @@ def sanitize_enum_name(name):
 
 class Func():
 
-    def __init__(self, name):
+    def __init__(self, name, blas_type):
         self.name = name
+        self.blas_type = blas_types[blas_type]
         self.args = []
 
     def __repr__(self):
@@ -80,7 +81,9 @@ class Func():
             terra_args.append("fld%s : c.legion_field_id_t" % arg)
 
         for arg, dim  in pointer_args.items():
-            body.append("var raw%s = get_raw_pointer_%dd(rect%s, pr%s, fld%s)" % (arg, dim, arg, arg, arg))
+            body.append("var raw%s : %s_ptr" % (arg, self.blas_type))
+            body.append("[get_raw_ptr_factory(%d, %s, rect%s, pr%s, fld%s, raw%s, %s_ptr)]" %
+                        (dim, self.blas_type, arg, arg, arg, arg, self.blas_type))
 
         cblas_args = []
         prev_type_pointer = False
@@ -99,7 +102,7 @@ class Func():
             else:
                 cblas_args.append(arg.name)
 
-        cblas_call = "cblas.%s(%s)"
+        cblas_call = "cblas.cblas_%s(%s)"
         cblas_args = ", ".join(cblas_args)
 
         terra_args = list(map(lambda a: "\n\t"+a, terra_args))
@@ -125,7 +128,11 @@ def parse_funcs(ns):
             print("Unsupported blas type", name)
             continue
 
-        f = Func(name)
+        f = Func(name, name[0])
+
+        if 'dsdot' in name:
+            f.blas_type = "float"
+
         skip = False
 
         for a in func.arguments:

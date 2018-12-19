@@ -19,35 +19,37 @@ local c = regentlib.c
 terralib.linklibrary("libcblas.so")
 local cblas = terralib.includec("cblas.h")
 
-function raw_ptr_factory(ty)
+function raw_ptr_factory(typ)
   local struct raw_ptr
   {
-    ptr : &ty,
+    ptr : &typ,
     offset : int,
   }
   return raw_ptr
 end
 
-local raw_ptr = raw_ptr_factory(double)
+local float_ptr = raw_ptr_factory(float)
+local double_ptr = raw_ptr_factory(double)
+local complex_ptr = raw_ptr_factory(complex)
 
-terra get_raw_ptr_2d(rect: rect2d,
-                     pr : c.legion_physical_region_t,
-                     fld : c.legion_field_id_t)
-  var fa = c.legion_physical_region_get_field_accessor_array_2d(pr, fld)
-  var subrect : c.legion_rect_2d_t
-  var offsets : c.legion_byte_offset_t[2]
-  var ptr = c.legion_accessor_array_2d_raw_rect_ptr(fa, rect, &subrect, offsets)
-  return raw_ptr { ptr = [&double](ptr), offset = offsets[1].offset / sizeof(double) }
-end
-
-terra get_raw_ptr_1d(rect: rect1d,
-                     pr : c.legion_physical_region_t,
-                     fld : c.legion_field_id_t)
-  var fa = c.legion_physical_region_get_field_accessor_array_1d(pr, fld)
-  var subrect : c.legion_rect_1d_t
-  var offsets : c.legion_byte_offset_t[1]
-  var ptr = c.legion_accessor_array_1d_raw_rect_ptr(fa, rect, &subrect, offsets)
-  return raw_ptr { ptr = [&double](ptr), offset = offsets[0].offset / sizeof(double) }
+function get_raw_ptr_factory(dim, typ, rect, pr, fld, raw, raw_ptr)
+  if dim == 2 then
+    return quote
+      var fa = c.legion_physical_region_get_field_accessor_array_2d(pr, fld)
+      var subrect : c.legion_rect_2d_t
+      var offsets : c.legion_byte_offset_t[dim]
+      var ptr = c.legion_accessor_array_2d_raw_rect_ptr(fa, rect, &subrect, offsets)
+      raw = raw_ptr { ptr = [&typ](ptr), offset = offsets[dim-1].offset / sizeof(typ) }
+    end
+  elseif dim == 1 then
+    return quote
+      var fa = c.legion_physical_region_get_field_accessor_array_1d(pr, fld)
+      var subrect : c.legion_rect_1d_t
+      var offsets : c.legion_byte_offset_t[dim]
+      var ptr = c.legion_accessor_array_1d_raw_rect_ptr(fa, rect, &subrect, offsets)
+      raw = raw_ptr { ptr = [&typ](ptr), offset = offsets[dim-1].offset / sizeof(typ) }
+    end
+  end
 end
 
 """

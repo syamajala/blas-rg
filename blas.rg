@@ -19,35 +19,37 @@ local c = regentlib.c
 terralib.linklibrary("libcblas.so")
 local cblas = terralib.includec("cblas.h")
 
-function raw_ptr_factory(ty)
+function raw_ptr_factory(typ)
   local struct raw_ptr
   {
-    ptr : &ty,
+    ptr : &typ,
     offset : int,
   }
   return raw_ptr
 end
 
-local raw_ptr = raw_ptr_factory(double)
+local float_ptr = raw_ptr_factory(float)
+local double_ptr = raw_ptr_factory(double)
+local complex_ptr = raw_ptr_factory(complex)
 
-terra get_raw_ptr_2d(rect: rect2d,
-                     pr : c.legion_physical_region_t,
-                     fld : c.legion_field_id_t)
-  var fa = c.legion_physical_region_get_field_accessor_array_2d(pr, fld)
-  var subrect : c.legion_rect_2d_t
-  var offsets : c.legion_byte_offset_t[2]
-  var ptr = c.legion_accessor_array_2d_raw_rect_ptr(fa, rect, &subrect, offsets)
-  return raw_ptr { ptr = [&double](ptr), offset = offsets[1].offset / sizeof(double) }
-end
-
-terra get_raw_ptr_1d(rect: rect1d,
-                     pr : c.legion_physical_region_t,
-                     fld : c.legion_field_id_t)
-  var fa = c.legion_physical_region_get_field_accessor_array_1d(pr, fld)
-  var subrect : c.legion_rect_1d_t
-  var offsets : c.legion_byte_offset_t[1]
-  var ptr = c.legion_accessor_array_1d_raw_rect_ptr(fa, rect, &subrect, offsets)
-  return raw_ptr { ptr = [&double](ptr), offset = offsets[0].offset / sizeof(double) }
+function get_raw_ptr_factory(dim, typ, rect, pr, fld, raw, raw_ptr)
+  if dim == 2 then
+    return quote
+      var fa = c.legion_physical_region_get_field_accessor_array_2d(pr, fld)
+      var subrect : c.legion_rect_2d_t
+      var offsets : c.legion_byte_offset_t[dim]
+      var ptr = c.legion_accessor_array_2d_raw_rect_ptr(fa, rect, &subrect, offsets)
+      raw = raw_ptr { ptr = [&typ](ptr), offset = offsets[dim-1].offset / sizeof(typ) }
+    end
+  elseif dim == 1 then
+    return quote
+      var fa = c.legion_physical_region_get_field_accessor_array_1d(pr, fld)
+      var subrect : c.legion_rect_1d_t
+      var offsets : c.legion_byte_offset_t[dim]
+      var ptr = c.legion_accessor_array_1d_raw_rect_ptr(fa, rect, &subrect, offsets)
+      raw = raw_ptr { ptr = [&typ](ptr), offset = offsets[dim-1].offset / sizeof(typ) }
+    end
+  end
 end
 
 terra sdsdot_terra(
@@ -60,9 +62,11 @@ terra sdsdot_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.sdsdot(N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	cblas.cblas_sdsdot(N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
 terra dsdot_terra(
@@ -74,9 +78,11 @@ terra dsdot_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.dsdot(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	cblas.cblas_dsdot(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
 terra sdot_terra(
@@ -88,9 +94,11 @@ terra sdot_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.sdot(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	cblas.cblas_sdot(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
 terra ddot_terra(
@@ -102,9 +110,11 @@ terra ddot_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.ddot(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	cblas.cblas_ddot(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
 terra snrm2_terra(
@@ -113,8 +123,9 @@ terra snrm2_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	cblas.snrm2(N, rawX.ptr, rawX.offset)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	cblas.cblas_snrm2(N, rawX.ptr, rawX.offset)
 end
 
 terra sasum_terra(
@@ -123,8 +134,9 @@ terra sasum_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	cblas.sasum(N, rawX.ptr, rawX.offset)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	cblas.cblas_sasum(N, rawX.ptr, rawX.offset)
 end
 
 terra dnrm2_terra(
@@ -133,8 +145,9 @@ terra dnrm2_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	cblas.dnrm2(N, rawX.ptr, rawX.offset)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	cblas.cblas_dnrm2(N, rawX.ptr, rawX.offset)
 end
 
 terra dasum_terra(
@@ -143,8 +156,9 @@ terra dasum_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	cblas.dasum(N, rawX.ptr, rawX.offset)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	cblas.cblas_dasum(N, rawX.ptr, rawX.offset)
 end
 
 terra sswap_terra(
@@ -156,9 +170,11 @@ terra sswap_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.sswap(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	cblas.cblas_sswap(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
 terra scopy_terra(
@@ -170,9 +186,11 @@ terra scopy_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.scopy(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	cblas.cblas_scopy(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
 terra saxpy_terra(
@@ -185,9 +203,11 @@ terra saxpy_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.saxpy(N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	cblas.cblas_saxpy(N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
 terra dswap_terra(
@@ -199,9 +219,11 @@ terra dswap_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.dswap(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	cblas.cblas_dswap(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
 terra dcopy_terra(
@@ -213,9 +235,11 @@ terra dcopy_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.dcopy(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	cblas.cblas_dcopy(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
 terra daxpy_terra(
@@ -228,9 +252,11 @@ terra daxpy_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.daxpy(N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	cblas.cblas_daxpy(N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
 terra srot_terra(
@@ -244,9 +270,11 @@ terra srot_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.srot(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, c, s)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	cblas.cblas_srot(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, c, s)
 end
 
 terra srotm_terra(
@@ -261,10 +289,13 @@ terra srotm_terra(
 	prP : c.legion_physical_region_t,
 	fldP : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	var rawP = get_raw_pointer_1d(rectP, prP, fldP)
-	cblas.srotm(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawP.ptr)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var rawP : float_ptr
+	[get_raw_ptr_factory(1, float, rectP, prP, fldP, rawP, float_ptr)]
+	cblas.cblas_srotm(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawP.ptr)
 end
 
 terra drot_terra(
@@ -278,9 +309,11 @@ terra drot_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.drot(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, c, s)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	cblas.cblas_drot(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, c, s)
 end
 
 terra drotm_terra(
@@ -295,10 +328,13 @@ terra drotm_terra(
 	prP : c.legion_physical_region_t,
 	fldP : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	var rawP = get_raw_pointer_1d(rectP, prP, fldP)
-	cblas.drotm(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawP.ptr)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var rawP : double_ptr
+	[get_raw_ptr_factory(1, double, rectP, prP, fldP, rawP, double_ptr)]
+	cblas.cblas_drotm(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawP.ptr)
 end
 
 terra sscal_terra(
@@ -308,8 +344,9 @@ terra sscal_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	cblas.sscal(N, alpha, rawX.ptr, rawX.offset)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	cblas.cblas_sscal(N, alpha, rawX.ptr, rawX.offset)
 end
 
 terra dscal_terra(
@@ -319,8 +356,9 @@ terra dscal_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	cblas.dscal(N, alpha, rawX.ptr, rawX.offset)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	cblas.cblas_dscal(N, alpha, rawX.ptr, rawX.offset)
 end
 
 terra sgemv_terra(
@@ -339,10 +377,13 @@ terra sgemv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.sgemv(cblas.CblasColMajor, TransA, M, N, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	cblas.cblas_sgemv(cblas.CblasColMajor, TransA, M, N, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
 end
 
 terra sgbmv_terra(
@@ -363,10 +404,13 @@ terra sgbmv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.sgbmv(cblas.CblasColMajor, TransA, M, N, KL, KU, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	cblas.cblas_sgbmv(cblas.CblasColMajor, TransA, M, N, KL, KU, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
 end
 
 terra strmv_terra(
@@ -381,9 +425,11 @@ terra strmv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	cblas.strmv(cblas.CblasColMajor, Uplo, TransA, Diag, N, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	cblas.cblas_strmv(cblas.CblasColMajor, Uplo, TransA, Diag, N, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
 terra stbmv_terra(
@@ -399,9 +445,11 @@ terra stbmv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	cblas.stbmv(cblas.CblasColMajor, Uplo, TransA, Diag, N, K, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	cblas.cblas_stbmv(cblas.CblasColMajor, Uplo, TransA, Diag, N, K, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
 terra strsv_terra(
@@ -416,9 +464,11 @@ terra strsv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	cblas.strsv(cblas.CblasColMajor, Uplo, TransA, Diag, N, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	cblas.cblas_strsv(cblas.CblasColMajor, Uplo, TransA, Diag, N, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
 terra stbsv_terra(
@@ -434,9 +484,11 @@ terra stbsv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	cblas.stbsv(cblas.CblasColMajor, Uplo, TransA, Diag, N, K, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	cblas.cblas_stbsv(cblas.CblasColMajor, Uplo, TransA, Diag, N, K, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
 terra dgemv_terra(
@@ -455,10 +507,13 @@ terra dgemv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.dgemv(cblas.CblasColMajor, TransA, M, N, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	cblas.cblas_dgemv(cblas.CblasColMajor, TransA, M, N, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
 end
 
 terra dgbmv_terra(
@@ -479,10 +534,13 @@ terra dgbmv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.dgbmv(cblas.CblasColMajor, TransA, M, N, KL, KU, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	cblas.cblas_dgbmv(cblas.CblasColMajor, TransA, M, N, KL, KU, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
 end
 
 terra dtrmv_terra(
@@ -497,9 +555,11 @@ terra dtrmv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	cblas.dtrmv(cblas.CblasColMajor, Uplo, TransA, Diag, N, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	cblas.cblas_dtrmv(cblas.CblasColMajor, Uplo, TransA, Diag, N, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
 terra dtbmv_terra(
@@ -515,9 +575,11 @@ terra dtbmv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	cblas.dtbmv(cblas.CblasColMajor, Uplo, TransA, Diag, N, K, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	cblas.cblas_dtbmv(cblas.CblasColMajor, Uplo, TransA, Diag, N, K, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
 terra dtrsv_terra(
@@ -532,9 +594,11 @@ terra dtrsv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	cblas.dtrsv(cblas.CblasColMajor, Uplo, TransA, Diag, N, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	cblas.cblas_dtrsv(cblas.CblasColMajor, Uplo, TransA, Diag, N, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
 terra dtbsv_terra(
@@ -550,9 +614,11 @@ terra dtbsv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	cblas.dtbsv(cblas.CblasColMajor, Uplo, TransA, Diag, N, K, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	cblas.cblas_dtbsv(cblas.CblasColMajor, Uplo, TransA, Diag, N, K, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
 terra ssymv_terra(
@@ -570,10 +636,13 @@ terra ssymv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.ssymv(cblas.CblasColMajor, Uplo, N, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	cblas.cblas_ssymv(cblas.CblasColMajor, Uplo, N, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
 end
 
 terra ssbmv_terra(
@@ -592,10 +661,13 @@ terra ssbmv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.ssbmv(cblas.CblasColMajor, Uplo, N, K, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	cblas.cblas_ssbmv(cblas.CblasColMajor, Uplo, N, K, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
 end
 
 terra sger_terra(
@@ -612,10 +684,13 @@ terra sger_terra(
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	cblas.sger(cblas.CblasColMajor, M, N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	cblas.cblas_sger(cblas.CblasColMajor, M, N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
 end
 
 terra ssyr_terra(
@@ -629,9 +704,11 @@ terra ssyr_terra(
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	cblas.ssyr(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawA.ptr, rawA.offset)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	cblas.cblas_ssyr(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawA.ptr, rawA.offset)
 end
 
 terra sspr_terra(
@@ -645,9 +722,11 @@ terra sspr_terra(
 	prAp : c.legion_physical_region_t,
 	fldAp : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawAp = get_raw_pointer_1d(rectAp, prAp, fldAp)
-	cblas.sspr(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawAp.ptr)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawAp : float_ptr
+	[get_raw_ptr_factory(1, float, rectAp, prAp, fldAp, rawAp, float_ptr)]
+	cblas.cblas_sspr(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawAp.ptr)
 end
 
 terra ssyr2_terra(
@@ -664,10 +743,13 @@ terra ssyr2_terra(
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	cblas.ssyr2(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	cblas.cblas_ssyr2(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
 end
 
 terra sspr2_terra(
@@ -684,10 +766,13 @@ terra sspr2_terra(
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	cblas.sspr2(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	cblas.cblas_sspr2(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr)
 end
 
 terra dsymv_terra(
@@ -705,10 +790,13 @@ terra dsymv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.dsymv(cblas.CblasColMajor, Uplo, N, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	cblas.cblas_dsymv(cblas.CblasColMajor, Uplo, N, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
 end
 
 terra dsbmv_terra(
@@ -727,10 +815,13 @@ terra dsbmv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	cblas.dsbmv(cblas.CblasColMajor, Uplo, N, K, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	cblas.cblas_dsbmv(cblas.CblasColMajor, Uplo, N, K, alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, beta, rawY.ptr, rawY.offset)
 end
 
 terra dger_terra(
@@ -747,10 +838,13 @@ terra dger_terra(
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	cblas.dger(cblas.CblasColMajor, M, N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	cblas.cblas_dger(cblas.CblasColMajor, M, N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
 end
 
 terra dsyr_terra(
@@ -764,9 +858,11 @@ terra dsyr_terra(
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	cblas.dsyr(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawA.ptr, rawA.offset)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	cblas.cblas_dsyr(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawA.ptr, rawA.offset)
 end
 
 terra dspr_terra(
@@ -780,9 +876,11 @@ terra dspr_terra(
 	prAp : c.legion_physical_region_t,
 	fldAp : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawAp = get_raw_pointer_1d(rectAp, prAp, fldAp)
-	cblas.dspr(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawAp.ptr)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawAp : double_ptr
+	[get_raw_ptr_factory(1, double, rectAp, prAp, fldAp, rawAp, double_ptr)]
+	cblas.cblas_dspr(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawAp.ptr)
 end
 
 terra dsyr2_terra(
@@ -799,10 +897,13 @@ terra dsyr2_terra(
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	cblas.dsyr2(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	cblas.cblas_dsyr2(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
 end
 
 terra dspr2_terra(
@@ -819,10 +920,13 @@ terra dspr2_terra(
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
-	var rawX = get_raw_pointer_1d(rectX, prX, fldX)
-	var rawY = get_raw_pointer_1d(rectY, prY, fldY)
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	cblas.dspr2(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	cblas.cblas_dspr2(cblas.CblasColMajor, Uplo, N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr)
 end
 
 terra sgemm_terra(
@@ -843,10 +947,13 @@ terra sgemm_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawB = get_raw_pointer_2d(rectB, prB, fldB)
-	var rawC = get_raw_pointer_2d(rectC, prC, fldC)
-	cblas.sgemm(cblas.CblasColMajor, TransA, TransB, M, N, K, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, beta, rawC.ptr, rawC.offset)
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var rawB : float_ptr
+	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
+	var rawC : float_ptr
+	[get_raw_ptr_factory(2, float, rectC, prC, fldC, rawC, float_ptr)]
+	cblas.cblas_sgemm(cblas.CblasColMajor, TransA, TransB, M, N, K, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, beta, rawC.ptr, rawC.offset)
 end
 
 terra ssymm_terra(
@@ -866,10 +973,13 @@ terra ssymm_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawB = get_raw_pointer_2d(rectB, prB, fldB)
-	var rawC = get_raw_pointer_2d(rectC, prC, fldC)
-	cblas.ssymm(cblas.CblasColMajor, Side, Uplo, M, N, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, beta, rawC.ptr, rawC.offset)
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var rawB : float_ptr
+	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
+	var rawC : float_ptr
+	[get_raw_ptr_factory(2, float, rectC, prC, fldC, rawC, float_ptr)]
+	cblas.cblas_ssymm(cblas.CblasColMajor, Side, Uplo, M, N, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, beta, rawC.ptr, rawC.offset)
 end
 
 terra ssyrk_terra(
@@ -886,9 +996,11 @@ terra ssyrk_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawC = get_raw_pointer_2d(rectC, prC, fldC)
-	cblas.ssyrk(cblas.CblasColMajor, Uplo, Trans, N, K, alpha, rawA.ptr, rawA.offset, beta, rawC.ptr, rawC.offset)
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var rawC : float_ptr
+	[get_raw_ptr_factory(2, float, rectC, prC, fldC, rawC, float_ptr)]
+	cblas.cblas_ssyrk(cblas.CblasColMajor, Uplo, Trans, N, K, alpha, rawA.ptr, rawA.offset, beta, rawC.ptr, rawC.offset)
 end
 
 terra ssyr2k_terra(
@@ -908,10 +1020,13 @@ terra ssyr2k_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawB = get_raw_pointer_2d(rectB, prB, fldB)
-	var rawC = get_raw_pointer_2d(rectC, prC, fldC)
-	cblas.ssyr2k(cblas.CblasColMajor, Uplo, Trans, N, K, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, beta, rawC.ptr, rawC.offset)
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var rawB : float_ptr
+	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
+	var rawC : float_ptr
+	[get_raw_ptr_factory(2, float, rectC, prC, fldC, rawC, float_ptr)]
+	cblas.cblas_ssyr2k(cblas.CblasColMajor, Uplo, Trans, N, K, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, beta, rawC.ptr, rawC.offset)
 end
 
 terra strmm_terra(
@@ -929,9 +1044,11 @@ terra strmm_terra(
 	prB : c.legion_physical_region_t,
 	fldB : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawB = get_raw_pointer_2d(rectB, prB, fldB)
-	cblas.strmm(cblas.CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var rawB : float_ptr
+	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
+	cblas.cblas_strmm(cblas.CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
 end
 
 terra strsm_terra(
@@ -949,9 +1066,11 @@ terra strsm_terra(
 	prB : c.legion_physical_region_t,
 	fldB : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawB = get_raw_pointer_2d(rectB, prB, fldB)
-	cblas.strsm(cblas.CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
+	var rawA : float_ptr
+	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var rawB : float_ptr
+	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
+	cblas.cblas_strsm(cblas.CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
 end
 
 terra dgemm_terra(
@@ -972,10 +1091,13 @@ terra dgemm_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawB = get_raw_pointer_2d(rectB, prB, fldB)
-	var rawC = get_raw_pointer_2d(rectC, prC, fldC)
-	cblas.dgemm(cblas.CblasColMajor, TransA, TransB, M, N, K, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, beta, rawC.ptr, rawC.offset)
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var rawB : double_ptr
+	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
+	var rawC : double_ptr
+	[get_raw_ptr_factory(2, double, rectC, prC, fldC, rawC, double_ptr)]
+	cblas.cblas_dgemm(cblas.CblasColMajor, TransA, TransB, M, N, K, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, beta, rawC.ptr, rawC.offset)
 end
 
 terra dsymm_terra(
@@ -995,10 +1117,13 @@ terra dsymm_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawB = get_raw_pointer_2d(rectB, prB, fldB)
-	var rawC = get_raw_pointer_2d(rectC, prC, fldC)
-	cblas.dsymm(cblas.CblasColMajor, Side, Uplo, M, N, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, beta, rawC.ptr, rawC.offset)
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var rawB : double_ptr
+	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
+	var rawC : double_ptr
+	[get_raw_ptr_factory(2, double, rectC, prC, fldC, rawC, double_ptr)]
+	cblas.cblas_dsymm(cblas.CblasColMajor, Side, Uplo, M, N, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, beta, rawC.ptr, rawC.offset)
 end
 
 terra dsyrk_terra(
@@ -1015,9 +1140,11 @@ terra dsyrk_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawC = get_raw_pointer_2d(rectC, prC, fldC)
-	cblas.dsyrk(cblas.CblasColMajor, Uplo, Trans, N, K, alpha, rawA.ptr, rawA.offset, beta, rawC.ptr, rawC.offset)
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var rawC : double_ptr
+	[get_raw_ptr_factory(2, double, rectC, prC, fldC, rawC, double_ptr)]
+	cblas.cblas_dsyrk(cblas.CblasColMajor, Uplo, Trans, N, K, alpha, rawA.ptr, rawA.offset, beta, rawC.ptr, rawC.offset)
 end
 
 terra dsyr2k_terra(
@@ -1037,10 +1164,13 @@ terra dsyr2k_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawB = get_raw_pointer_2d(rectB, prB, fldB)
-	var rawC = get_raw_pointer_2d(rectC, prC, fldC)
-	cblas.dsyr2k(cblas.CblasColMajor, Uplo, Trans, N, K, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, beta, rawC.ptr, rawC.offset)
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var rawB : double_ptr
+	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
+	var rawC : double_ptr
+	[get_raw_ptr_factory(2, double, rectC, prC, fldC, rawC, double_ptr)]
+	cblas.cblas_dsyr2k(cblas.CblasColMajor, Uplo, Trans, N, K, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, beta, rawC.ptr, rawC.offset)
 end
 
 terra dtrmm_terra(
@@ -1058,9 +1188,11 @@ terra dtrmm_terra(
 	prB : c.legion_physical_region_t,
 	fldB : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawB = get_raw_pointer_2d(rectB, prB, fldB)
-	cblas.dtrmm(cblas.CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var rawB : double_ptr
+	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
+	cblas.cblas_dtrmm(cblas.CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
 end
 
 terra dtrsm_terra(
@@ -1078,8 +1210,10 @@ terra dtrsm_terra(
 	prB : c.legion_physical_region_t,
 	fldB : c.legion_field_id_t)
 
-	var rawA = get_raw_pointer_2d(rectA, prA, fldA)
-	var rawB = get_raw_pointer_2d(rectB, prB, fldB)
-	cblas.dtrsm(cblas.CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
+	var rawA : double_ptr
+	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var rawB : double_ptr
+	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
+	cblas.cblas_dtrsm(cblas.CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
 end
 
