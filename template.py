@@ -1,5 +1,4 @@
-header = """
--- Copyright 2018 Stanford University
+copyright = """-- Copyright 2019 Stanford University
 --
 -- Licensed under the Apache License, Version 2.0 (the "License");
 -- you may not use this file except in compliance with the License.
@@ -12,7 +11,9 @@ header = """
 -- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
+"""
 
+header = """
 import "regent"
 local c = regentlib.c
 
@@ -53,3 +54,18 @@ function get_raw_ptr_factory(dim, typ, rect, pr, fld, raw, raw_ptr)
 end
 
 """
+
+task_template = """
+__demand(__leaf)
+task %s(%s)
+where
+%s
+do
+%s
+end\n"""
+
+task_template_no_priv = """
+__demand(__leaf)
+task %s(%s)
+%s
+end\n"""
