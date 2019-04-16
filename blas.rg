@@ -15,8 +15,8 @@
 import "regent"
 local c = regentlib.c
 
-terralib.linklibrary("libcblas.so")
-local cblas = terralib.includec("cblas.h")
+terralib.linklibrary("libcblas.so")        -- modify this
+local cblas = terralib.includec("cblas.h") -- modify this
 
 function raw_ptr_factory(typ)
   local struct raw_ptr
