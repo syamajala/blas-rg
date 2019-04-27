@@ -15,8 +15,8 @@
 import "regent"
 local c = regentlib.c
 
-terralib.linklibrary("libcblas.so")        -- modify this
-local cblas = terralib.includec("cblas.h") -- modify this
+terralib.linklibrary("libcblas.so")
+local cblas = terralib.includec("cblas.h")
 
 function raw_ptr_factory(typ)
   local struct raw_ptr
@@ -1361,8 +1361,8 @@ task sswap(
 	X : region(ispace(int1d), float),
 	Y : region(ispace(int1d), float))
 where
-	reads(X),
-	reads(Y)
+	reads writes(X),
+	reads writes(Y)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -1378,7 +1378,7 @@ task scopy(
 	Y : region(ispace(int1d), float))
 where
 	reads(X),
-	reads(Y)
+	reads writes(Y)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -1395,7 +1395,7 @@ task saxpy(
 	Y : region(ispace(int1d), float))
 where
 	reads(X),
-	reads(Y)
+	reads writes(Y)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -1410,8 +1410,8 @@ task dswap(
 	X : region(ispace(int1d), double),
 	Y : region(ispace(int1d), double))
 where
-	reads(X),
-	reads(Y)
+	reads writes(X),
+	reads writes(Y)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -1427,7 +1427,7 @@ task dcopy(
 	Y : region(ispace(int1d), double))
 where
 	reads(X),
-	reads(Y)
+	reads writes(Y)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -1444,7 +1444,7 @@ task daxpy(
 	Y : region(ispace(int1d), double))
 where
 	reads(X),
-	reads(Y)
+	reads writes(Y)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -1459,7 +1459,7 @@ task sscal(
 	alpha : float,
 	X : region(ispace(int1d), float))
 where
-	reads(X)
+	reads writes(X)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -1472,7 +1472,7 @@ task dscal(
 	alpha : double,
 	X : region(ispace(int1d), double))
 where
-	reads(X)
+	reads writes(X)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -1491,7 +1491,7 @@ task sgemv(
 where
 	reads(A),
 	reads(X),
-	reads(Y)
+	reads writes(Y)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -1519,7 +1519,7 @@ task sgbmv(
 where
 	reads(A),
 	reads(X),
-	reads(Y)
+	reads writes(Y)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -1539,7 +1539,7 @@ task strmv(
 	X : region(ispace(int1d), float))
 where
 	reads(A),
-	reads(X)
+	reads writes(X)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -1559,7 +1559,7 @@ task stbmv(
 	X : region(ispace(int1d), float))
 where
 	reads(A),
-	reads(X)
+	reads writes(X)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -1579,7 +1579,7 @@ task stpmv(
 	X : region(ispace(int1d), float))
 where
 	reads(AP),
-	reads(X)
+	reads writes(X)
 do
 	var rectAP = AP.bounds
 	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
@@ -1597,7 +1597,7 @@ task strsv(
 	X : region(ispace(int1d), float))
 where
 	reads(A),
-	reads(X)
+	reads writes(X)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -1617,7 +1617,7 @@ task stbsv(
 	X : region(ispace(int1d), float))
 where
 	reads(A),
-	reads(X)
+	reads writes(X)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -1637,7 +1637,7 @@ task stpsv(
 	X : region(ispace(int1d), float))
 where
 	reads(AP),
-	reads(X)
+	reads writes(X)
 do
 	var rectAP = AP.bounds
 	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
@@ -1657,7 +1657,7 @@ task dgemv(
 where
 	reads(A),
 	reads(X),
-	reads(Y)
+	reads writes(Y)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -1685,7 +1685,7 @@ task dgbmv(
 where
 	reads(A),
 	reads(X),
-	reads(Y)
+	reads writes(Y)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -1705,7 +1705,7 @@ task dtrmv(
 	X : region(ispace(int1d), double))
 where
 	reads(A),
-	reads(X)
+	reads writes(X)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -1725,7 +1725,7 @@ task dtbmv(
 	X : region(ispace(int1d), double))
 where
 	reads(A),
-	reads(X)
+	reads writes(X)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -1745,7 +1745,7 @@ task dtpmv(
 	X : region(ispace(int1d), double))
 where
 	reads(AP),
-	reads(X)
+	reads writes(X)
 do
 	var rectAP = AP.bounds
 	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
@@ -1763,7 +1763,7 @@ task dtrsv(
 	X : region(ispace(int1d), double))
 where
 	reads(A),
-	reads(X)
+	reads writes(X)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -1783,7 +1783,7 @@ task dtbsv(
 	X : region(ispace(int1d), double))
 where
 	reads(A),
-	reads(X)
+	reads writes(X)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -1803,7 +1803,7 @@ task dtpsv(
 	X : region(ispace(int1d), double))
 where
 	reads(AP),
-	reads(X)
+	reads writes(X)
 do
 	var rectAP = AP.bounds
 	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
@@ -1823,7 +1823,7 @@ task ssymv(
 where
 	reads(A),
 	reads(X),
-	reads(Y)
+	reads writes(Y)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -1847,7 +1847,7 @@ task ssbmv(
 where
 	reads(A),
 	reads(X),
-	reads(Y)
+	reads writes(Y)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -1871,7 +1871,7 @@ task sspmv(
 where
 	reads(AP),
 	reads(X),
-	reads(Y)
+	reads writes(Y)
 do
 	var rectAP = AP.bounds
 	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
@@ -1891,7 +1891,7 @@ task sger(
 where
 	reads(X),
 	reads(Y),
-	reads(A)
+	reads writes(A)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -1912,7 +1912,7 @@ task ssyr(
 	A : region(ispace(int2d), float))
 where
 	reads(X),
-	reads(A)
+	reads writes(A)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -1931,7 +1931,7 @@ task sspr(
 	AP : region(ispace(int1d), float))
 where
 	reads(X),
-	reads(AP)
+	reads writes(AP)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -1950,7 +1950,7 @@ task ssyr2(
 where
 	reads(X),
 	reads(Y),
-	reads(A)
+	reads writes(A)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -2001,7 +2001,7 @@ task dsymv(
 where
 	reads(A),
 	reads(X),
-	reads(Y)
+	reads writes(Y)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -2025,7 +2025,7 @@ task dsbmv(
 where
 	reads(A),
 	reads(X),
-	reads(Y)
+	reads writes(Y)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -2049,7 +2049,7 @@ task dspmv(
 where
 	reads(AP),
 	reads(X),
-	reads(Y)
+	reads writes(Y)
 do
 	var rectAP = AP.bounds
 	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
@@ -2069,7 +2069,7 @@ task dger(
 where
 	reads(X),
 	reads(Y),
-	reads(A)
+	reads writes(A)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -2090,7 +2090,7 @@ task dsyr(
 	A : region(ispace(int2d), double))
 where
 	reads(X),
-	reads(A)
+	reads writes(A)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -2109,7 +2109,7 @@ task dspr(
 	AP : region(ispace(int1d), double))
 where
 	reads(X),
-	reads(AP)
+	reads writes(AP)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -2128,7 +2128,7 @@ task dsyr2(
 where
 	reads(X),
 	reads(Y),
-	reads(A)
+	reads writes(A)
 do
 	var rectX = X.bounds
 	var sizeX = rectX.hi - rectX.lo + {1, 1}
@@ -2180,7 +2180,7 @@ task sgemm(
 where
 	reads(A),
 	reads(B),
-	reads(C)
+	reads writes(C)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -2224,7 +2224,7 @@ task ssymm(
 where
 	reads(A),
 	reads(B),
-	reads(C)
+	reads writes(C)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -2259,7 +2259,7 @@ task ssyrk(
 	C : region(ispace(int2d), float))
 where
 	reads(A),
-	reads(C)
+	reads writes(C)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -2294,7 +2294,7 @@ task ssyr2k(
 where
 	reads(A),
 	reads(B),
-	reads(C)
+	reads writes(C)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -2330,7 +2330,7 @@ task strmm(
 	B : region(ispace(int2d), float))
 where
 	reads(A),
-	reads(B)
+	reads writes(B)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -2358,7 +2358,7 @@ task strsm(
 	B : region(ispace(int2d), float))
 where
 	reads(A),
-	reads(B)
+	reads writes(B)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -2381,7 +2381,7 @@ task dgemm(
 where
 	reads(A),
 	reads(B),
-	reads(C)
+	reads writes(C)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -2425,7 +2425,7 @@ task dsymm(
 where
 	reads(A),
 	reads(B),
-	reads(C)
+	reads writes(C)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -2460,7 +2460,7 @@ task dsyrk(
 	C : region(ispace(int2d), double))
 where
 	reads(A),
-	reads(C)
+	reads writes(C)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -2495,7 +2495,7 @@ task dsyr2k(
 where
 	reads(A),
 	reads(B),
-	reads(C)
+	reads writes(C)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -2531,7 +2531,7 @@ task dtrmm(
 	B : region(ispace(int2d), double))
 where
 	reads(A),
-	reads(B)
+	reads writes(B)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
@@ -2559,7 +2559,7 @@ task dtrsm(
 	B : region(ispace(int2d), double))
 where
 	reads(A),
-	reads(B)
+	reads writes(B)
 do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}

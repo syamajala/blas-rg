@@ -24,7 +24,7 @@ import re
 vectors = ["X", "Y"]
 matrices = ["A", "B", "C"]
 enum_names = ["CBLAS_ORDER", "CBLAS_TRANSPOSE", "CBLAS_UPLO", "CBLAS_DIAG", "CBLAS_SIDE"]
-blas_types = {'i': 'real', 's': 'double', 'd': 'double', 'c': 'complex', 'z': 'complex'}
+blas_types = {'i': 'real', 's': 'float', 'd': 'double', 'c': 'complex', 'z': 'complex'}
 
 
 def sanitize_enum_name(name):
@@ -62,7 +62,7 @@ def typespec2type(typespec):
         raise TypeError("Unknown Type:", typespec)
 
 
-def find_var(name, fortran_vars, c_args=[], blas_type=None):
+def find_var(name, fortran_vars={}, c_args=[], blas_type=None):
     for var in fortran_vars:
         if var == name.lower():
             return fortran_vars[var]
@@ -148,10 +148,22 @@ class Func():
                 assert 0 < idx
                 prev_name = self.fortran_sig['c_order'][idx-1]
                 prev_name.upper()
-                cblas_args.append("raw%s.offset" % prev_name)
+                cblas_args.append(f"raw{prev_name}.offset")
                 continue
 
-            arg = find_var(name, self.fortran_sig['vars'], self.c_func.arguments, self.blas_type)
+            if 'rot' in self.name:
+                c_arg = find_var(name, c_args=self.c_func.arguments, blas_type=self.blas_type)
+                f_arg = find_var(name, fortran_vars=self.fortran_sig['vars'])
+                if 'dimension' in c_arg and f_arg is not None and 'dimension' not in f_arg:
+                    del c_arg['dimension']
+                    c_arg['pointer'] = True
+                elif 'dimension' in c_arg and f_arg is None:
+                    del c_arg['dimension']
+                    c_arg['pointer'] = True
+                arg = c_arg
+            else:
+                arg = find_var(name, self.fortran_sig['vars'], self.c_func.arguments, self.blas_type)
+
             assert arg is not None, "%s Unable to find variable: %s" % (self.name, name)
 
             if 'dimension' in arg:
@@ -162,11 +174,15 @@ class Func():
                 pointer_args.append(name)
 
                 typ = typespec2type(arg['typespec'])
-                body.append("var raw%s : %s_ptr" % (name, typ))
-                body.append("[get_raw_ptr_factory(%d, %s, rect%s, pr%s, fld%s, raw%s, %s_ptr)]" %
-                            (dim, typ, name, name, name, name, typ))
+                body.append(f"var raw{name} : {typ}_ptr")
+                body.append(f"[get_raw_ptr_factory({dim}, {typ}, rect{name}, pr{name}, fld{name}, raw{name}, {typ}_ptr)]")
 
-                cblas_args.append("raw%s.ptr" % name)
+                cblas_args.append(f"raw{name}.ptr")
+            elif 'pointer' in arg:
+                name = name.upper()
+                typ = typespec2type(arg['typespec'])
+                self.terra_args.append(f"{name} : {typ}")
+                cblas_args.append(f"&{name}")
             else:
                 self.terra_args.append("%s : %s" % (name, typespec2type(arg['typespec'])))
                 cblas_args.append(name)
@@ -201,7 +217,7 @@ class Func():
         for name in self.pointer_args:
             var = find_var(name, self.fortran_sig['vars'])
 
-            if 'intent' in var and var['intent'] == ['out']:
+            if 'intent' in var and 'out' in var['intent']:
                 privileges.append(f"reads writes({name})")
             else:
                 privileges.append(f"reads({name})")
@@ -213,7 +229,19 @@ class Func():
             arg, typ = arg.split(':')
             name = arg.strip()
             typ = typ.strip()
-            var = find_var(name, self.fortran_sig['vars'], self.c_func.arguments, self.blas_type)
+
+            if 'rot' in self.name:
+                c_arg = find_var(name, c_args=self.c_func.arguments, blas_type=self.blas_type)
+                f_arg = find_var(name, fortran_vars=self.fortran_sig['vars'])
+                if c_arg is not None and 'dimension' in c_arg and f_arg is not None and 'dimension' not in f_arg:
+                    del c_arg['dimension']
+                    c_arg['pointer'] = True
+                elif c_arg is not None and 'dimension' in c_arg and f_arg is None:
+                    del c_arg['dimension']
+                    c_arg['pointer'] = True
+                var = c_arg
+            else:
+                var = find_var(name, self.fortran_sig['vars'], self.c_func.arguments, self.blas_type)
 
             if var is None:
                 if typ == 'c.legion_physical_region_t':
