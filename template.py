@@ -17,8 +17,7 @@ header = """
 import "regent"
 local c = regentlib.c
 
-terralib.linklibrary("libcblas.so")
-local cblas = terralib.includec("cblas.h")
+%s
 
 function raw_ptr_factory(typ)
   local struct raw_ptr
@@ -55,6 +54,26 @@ end
 
 """
 
+blas = """
+terralib.linklibrary("libcblas.so")
+local cblas = terralib.includec("cblas.h")
+"""
+
+blas_header = header % blas
+
+cublas = """
+terralib.includepath = terralib.includepath .. ";/opt/cuda/include/"
+terralib.linklibrary("/opt/cuda/lib64/libcublas.so")
+terralib.linklibrary("./libcontext_manager.so")
+
+local cuda_runtime = terralib.includec("cuda_runtime.h")
+local cublas = terralib.includec("cublas_v2.h")
+
+local mgr = terralib.includec("context_manager.h", {"-I", "."})
+"""
+
+cublas_header = header % cublas
+
 task_template = """
 __demand(__leaf)
 task %s(%s)
@@ -66,6 +85,21 @@ end\n"""
 
 task_template_no_priv = """
 __demand(__leaf)
+task %s(%s)
+%s
+end\n"""
+
+cuda_task_template = """
+__demand(__cuda, __leaf)
+task %s(%s)
+where
+%s
+do
+%s
+end\n"""
+
+cuda_task_template_no_priv = """
+__demand(__cuda, __leaf)
 task %s(%s)
 %s
 end\n"""

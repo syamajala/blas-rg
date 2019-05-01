@@ -18,19 +18,12 @@ from pygccxml import utils
 from pygccxml import declarations
 from pygccxml import parser
 from numpy import f2py
-from template import copyright, blas_header, task_template, task_template_no_priv
+from template import copyright, cublas_header, cuda_task_template, cuda_task_template_no_priv
 import re
 
 vectors = ["X", "Y"]
 matrices = ["A", "B", "C"]
-enum_names = ["CBLAS_ORDER", "CBLAS_TRANSPOSE", "CBLAS_UPLO", "CBLAS_DIAG", "CBLAS_SIDE"]
 blas_types = {'i': 'real', 's': 'float', 'd': 'double', 'c': 'complex', 'z': 'complex'}
-
-
-def sanitize_enum_name(name):
-    for enum_name in enum_names:
-        if enum_name in name:
-            return enum_name
 
 
 def name2dim(name):
@@ -65,6 +58,14 @@ def typespec2type(typespec):
 def find_var(name, fortran_vars={}, c_args=[], blas_type=None):
     for var in fortran_vars:
         if var == name.lower():
+            for arg in c_args:
+                if arg.name == name:
+                    if declarations.type_traits.is_pointer(arg.decl_type):
+                        if name in vectors or name in matrices:
+                            fortran_vars[var]['dimension'] = True
+                        else:
+                            fortran_vars[var]['pointer'] = True
+                        break
             return fortran_vars[var]
 
     for arg in c_args:
@@ -82,7 +83,10 @@ def find_var(name, fortran_vars={}, c_args=[], blas_type=None):
                 var['typespec'] = 'integer'
 
             if declarations.type_traits.is_pointer(arg.decl_type):
-                var['dimension'] = True
+                if name in vectors or name in matrices:
+                    var['dimension'] = True
+                else:
+                    var['pointer'] = True
 
             const = declarations.type_traits.is_const(arg.decl_type)
             if const:
@@ -120,11 +124,38 @@ def sub(val):
     return val
 
 
+base_type_ranking = {'float': 0, 'int': 0, 'double': 0, 'double2': 1, 'float2': 1}
+
+
+def find_blas_type(c_args):
+    base_types = []
+
+    for arg in c_args:
+        if declarations.type_traits.is_pointer(arg.decl_type):
+            base_typ = str(declarations.type_traits.base_type(arg.decl_type))
+            if base_typ == 'cublasContext':
+                continue
+            base_types.append(base_typ)
+
+    rankings = [(base_type, base_type_ranking[base_type]) for base_type in base_types]
+
+    base_typ = max(rankings, key=lambda x: x[1])[0]
+
+    if base_typ == 'float2':
+        # TODO is this right?
+        return 'complex'
+    elif base_typ == 'double2':
+        # TODO is this right?
+        return 'complex'
+    else:
+        return base_typ
+
+
 class Func():
 
     def __init__(self, name, fortran_sig, c_func):
         self.name = name
-        self.blas_type = blas_types[name[0]]
+        self.blas_type = find_blas_type(c_func.arguments)
         self.terra_args = []
         self.fortran_sig = fortran_sig
         self.c_func = c_func
@@ -138,31 +169,32 @@ class Func():
         cblas_args = []
         body = []
         pointer_args = self.pointer_args
-
         for idx, name in enumerate(self.fortran_sig['c_order']):
 
-            if name == "Order" or name == "order":
-                cblas_args.append("cblas.CblasColMajor")
-                continue
-            elif name.startswith('inc') or name.startswith('off') or name.startswith('ld'):
+            if name.startswith('inc') or name.startswith('off') or name.startswith('ld'):
                 assert 0 < idx
                 prev_name = self.fortran_sig['c_order'][idx-1]
                 prev_name = prev_name.upper()
                 cblas_args.append(f"raw{prev_name}.offset")
                 continue
+            elif name == "handle":
+                body.append("var handle : cublas.cublasHandle_t")
+                body.append("mgr.create_handle(&handle)")
+                cblas_args.append("handle")
+                continue
 
-            if 'rot' in self.name:
-                c_arg = find_var(name, c_args=self.c_func.arguments, blas_type=self.blas_type)
-                f_arg = find_var(name, fortran_vars=self.fortran_sig['vars'])
-                if 'dimension' in c_arg and f_arg is not None and 'dimension' not in f_arg:
-                    del c_arg['dimension']
-                    c_arg['pointer'] = True
-                elif 'dimension' in c_arg and f_arg is None:
-                    del c_arg['dimension']
-                    c_arg['pointer'] = True
-                arg = c_arg
-            else:
-                arg = find_var(name, self.fortran_sig['vars'], self.c_func.arguments, self.blas_type)
+            # if 'rot' in self.name:
+            #     c_arg = find_var(name, c_args=self.c_func.arguments, blas_type=self.blas_type)
+            #     f_arg = find_var(name, fortran_vars=self.fortran_sig['vars'])
+            #     if 'dimension' in c_arg and f_arg is not None and 'dimension' not in f_arg:
+            #         del c_arg['dimension']
+            #         c_arg['pointer'] = True
+            #     elif 'dimension' in c_arg and f_arg is None:
+            #         del c_arg['dimension']
+            #         c_arg['pointer'] = True
+            #     arg = c_arg
+            # else:
+            arg = find_var(name, self.fortran_sig['vars'], self.c_func.arguments, self.blas_type)
 
             assert arg is not None, "%s Unable to find variable: %s" % (self.name, name)
 
@@ -196,12 +228,12 @@ class Func():
         if self.return_type != "void":
             cblas_call = "return "
 
-        cblas_call += "cblas.cblas_%s(%s)"
+        cblas_call += "cublas.cublas%s_v2(%s)"
         cblas_args = ", ".join(cblas_args)
 
         terra_args = list(map(lambda a: "\n\t"+a, self.terra_args))
         terra_args = ",".join(terra_args)
-        body.append(cblas_call % (self.name, cblas_args))
+        body.append(cblas_call % (self.name.capitalize(), cblas_args))
         body = list(map(lambda b: "\t"+b, body))
         body = "\n".join(body)
 
@@ -230,18 +262,18 @@ class Func():
             name = arg.strip()
             typ = typ.strip()
 
-            if 'rot' in self.name:
-                c_arg = find_var(name, c_args=self.c_func.arguments, blas_type=self.blas_type)
-                f_arg = find_var(name, fortran_vars=self.fortran_sig['vars'])
-                if c_arg is not None and 'dimension' in c_arg and f_arg is not None and 'dimension' not in f_arg:
-                    del c_arg['dimension']
-                    c_arg['pointer'] = True
-                elif c_arg is not None and 'dimension' in c_arg and f_arg is None:
-                    del c_arg['dimension']
-                    c_arg['pointer'] = True
-                var = c_arg
-            else:
-                var = find_var(name, self.fortran_sig['vars'], self.c_func.arguments, self.blas_type)
+            # if 'rot' in self.name:
+            #     c_arg = find_var(name, c_args=self.c_func.arguments, blas_type=self.blas_type)
+            #     f_arg = find_var(name, fortran_vars=self.fortran_sig['vars'])
+            #     if c_arg is not None and 'dimension' in c_arg and f_arg is not None and 'dimension' not in f_arg:
+            #         del c_arg['dimension']
+            #         c_arg['pointer'] = True
+            #     elif c_arg is not None and 'dimension' in c_arg and f_arg is None:
+            #         del c_arg['dimension']
+            #         c_arg['pointer'] = True
+            #     var = c_arg
+            # else:
+            var = find_var(name, self.fortran_sig['vars'], self.c_func.arguments, self.blas_type)
 
             if var is None:
                 if typ == 'c.legion_physical_region_t':
@@ -287,9 +319,7 @@ class Func():
                 trans = re.findall(r'(trans)(\w*)', val)
                 for t, m in trans:
                     t = ''.join((t, m))
-                    val = re.sub(t, f'Trans{m.upper()}', val)
-
-                val = re.sub(r'side', 'Side', val)
+                    val = re.sub(t, f'trans{m}', val)
 
                 if '?' in val:
                     val = re.sub(r'\(', '', val, count=1)
@@ -327,9 +357,9 @@ class Func():
         body = "\n".join(body)
 
         if privileges:
-            task = task_template % (self.name, task_args, privileges, body)
+            task = cuda_task_template % (self.name, task_args, privileges, body)
         else:
-            task = task_template_no_priv % (self.name, task_args, body)
+            task = cuda_task_template_no_priv % (self.name, task_args, body)
         return task
 
 
@@ -340,7 +370,9 @@ def parse_funcs(c_header, sig_file):
     # Configure the xml generator
     xml_generator_config = parser.xml_generator_configuration_t(
         xml_generator_path=generator_path,
-        xml_generator=generator_name)
+        xml_generator=generator_name,
+        include_paths=['/opt/cuda/include']
+    )
 
     # Parse the c++ file
     decls = parser.parse([c_header], xml_generator_config)
@@ -359,9 +391,21 @@ def parse_funcs(c_header, sig_file):
                 return i
 
     funcs = []
-
     for func in ns.free_functions():
-        name = func.name.split("_")[1]
+        name = func.name
+        if not name.startswith("cublas"):
+            continue
+
+        try:
+            name = re.split(r"cublas", func.name)[1]
+        except IndexError:
+            print("Skipping: ", func.name)
+            continue
+
+        if name.endswith("_v2"):
+            name = name[:-3]
+
+        name = name.lower()
         sig = find_sig(name)
 
         if sig is None:
@@ -382,27 +426,26 @@ def find_func(func):
 
 # if __name__ == '__main__':
 # The c++ file we want to parse
-c_header = "cblas.h"
+c_header = "/opt/cuda/include/cublas_v2.h"
 sig_file = "fblas.pyf"
 
 funcs = parse_funcs(c_header, sig_file)
 terra_funcs = []
 regent_funcs = []
 for idx, func in enumerate(funcs):
-    if 'rot' in func.name:
+    if 'rot' in func.name or func.name == 'csscal' or func.name == 'zdscal':
+        continue
+    if func.blas_type == 'complex':
         continue
     terra = func.to_terra()
-    if 'complex' in terra:
-        continue
-
     terra_funcs.append(terra)
     regent = func.to_regent()
     regent_funcs.append(regent)
 
 
-with open("blas.rg", 'w') as f:
+with open("cublas.rg", 'w') as f:
     f.write(copyright)
-    f.write(blas_header)
+    f.write(cublas_header)
     f.writelines(terra_funcs)
     f.writelines(regent_funcs)
 
