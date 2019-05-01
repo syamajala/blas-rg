@@ -19,6 +19,14 @@
 #include <cuda_runtime.h>
 #include "cublas_v2.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void create_handle(cublasHandle_t *handle);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
