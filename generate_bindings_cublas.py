@@ -183,17 +183,6 @@ class Func():
                 cblas_args.append("handle")
                 continue
 
-            # if 'rot' in self.name:
-            #     c_arg = find_var(name, c_args=self.c_func.arguments, blas_type=self.blas_type)
-            #     f_arg = find_var(name, fortran_vars=self.fortran_sig['vars'])
-            #     if 'dimension' in c_arg and f_arg is not None and 'dimension' not in f_arg:
-            #         del c_arg['dimension']
-            #         c_arg['pointer'] = True
-            #     elif 'dimension' in c_arg and f_arg is None:
-            #         del c_arg['dimension']
-            #         c_arg['pointer'] = True
-            #     arg = c_arg
-            # else:
             arg = find_var(name, self.fortran_sig['vars'], self.c_func.arguments, self.blas_type)
 
             assert arg is not None, "%s Unable to find variable: %s" % (self.name, name)
@@ -211,7 +200,6 @@ class Func():
 
                 cblas_args.append(f"raw{name}.ptr")
             elif 'pointer' in arg:
-                name = name.upper()
                 typ = typespec2type(arg['typespec'])
                 self.terra_args.append(f"{name} : {typ}")
                 cblas_args.append(f"&{name}")
@@ -255,24 +243,19 @@ class Func():
                 privileges.append(f"reads({name})")
 
             body.append(f"var rect{name} = {name}.bounds")
-            body.append(f"var size{name} = rect{name}.hi - rect{name}.lo + {{1, 1}}")
+            dim = name2dim(name)
+            if dim == 2:
+                body.append(f"var size{name} = rect{name}.hi - rect{name}.lo + {{1, 1}}")
+            elif dim == 1:
+                body.append(f"var size{name} = rect{name}.hi - rect{name}.lo + {{1}}")
+            else:
+                raise KeyError("Unknown dimension for name:", name)
 
         for arg in self.terra_args:
             arg, typ = arg.split(':')
             name = arg.strip()
             typ = typ.strip()
 
-            # if 'rot' in self.name:
-            #     c_arg = find_var(name, c_args=self.c_func.arguments, blas_type=self.blas_type)
-            #     f_arg = find_var(name, fortran_vars=self.fortran_sig['vars'])
-            #     if c_arg is not None and 'dimension' in c_arg and f_arg is not None and 'dimension' not in f_arg:
-            #         del c_arg['dimension']
-            #         c_arg['pointer'] = True
-            #     elif c_arg is not None and 'dimension' in c_arg and f_arg is None:
-            #         del c_arg['dimension']
-            #         c_arg['pointer'] = True
-            #     var = c_arg
-            # else:
             var = find_var(name, self.fortran_sig['vars'], self.c_func.arguments, self.blas_type)
 
             if var is None:
@@ -433,7 +416,7 @@ funcs = parse_funcs(c_header, sig_file)
 terra_funcs = []
 regent_funcs = []
 for idx, func in enumerate(funcs):
-    if 'rot' in func.name or func.name == 'csscal' or func.name == 'zdscal':
+    if func.name == 'csscal' or func.name == 'zdscal':
         continue
     if func.blas_type == 'complex':
         continue

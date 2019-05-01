@@ -62,7 +62,7 @@ end
 terra snrm2_terra(
 	n : int,
 	rectX : rect1d,
-	RESULT : float,
+	result : float,
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
@@ -70,13 +70,13 @@ terra snrm2_terra(
 	mgr.create_handle(&handle)
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
-	return cublas.cublasSnrm2_v2(handle, n, rawX.ptr, rawX.offset, &RESULT)
+	return cublas.cublasSnrm2_v2(handle, n, rawX.ptr, rawX.offset, &result)
 end
 
 terra dnrm2_terra(
 	n : int,
 	rectX : rect1d,
-	RESULT : double,
+	result : double,
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
@@ -84,14 +84,14 @@ terra dnrm2_terra(
 	mgr.create_handle(&handle)
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
-	return cublas.cublasDnrm2_v2(handle, n, rawX.ptr, rawX.offset, &RESULT)
+	return cublas.cublasDnrm2_v2(handle, n, rawX.ptr, rawX.offset, &result)
 end
 
 terra sdot_terra(
 	n : int,
 	rectX : rect1d,
 	rectY : rect1d,
-	RESULT : float,
+	result : float,
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t,
 	prY : c.legion_physical_region_t,
@@ -103,14 +103,14 @@ terra sdot_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
-	return cublas.cublasSdot_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, &RESULT)
+	return cublas.cublasSdot_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, &result)
 end
 
 terra ddot_terra(
 	n : int,
 	rectX : rect1d,
 	rectY : rect1d,
-	RESULT : double,
+	result : double,
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t,
 	prY : c.legion_physical_region_t,
@@ -122,12 +122,12 @@ terra ddot_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
-	return cublas.cublasDdot_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, &RESULT)
+	return cublas.cublasDdot_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, &result)
 end
 
 terra sscal_terra(
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	rectX : rect1d,
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
@@ -136,12 +136,12 @@ terra sscal_terra(
 	mgr.create_handle(&handle)
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
-	return cublas.cublasSscal_v2(handle, n, &ALPHA, rawX.ptr, rawX.offset)
+	return cublas.cublasSscal_v2(handle, n, &alpha, rawX.ptr, rawX.offset)
 end
 
 terra dscal_terra(
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	rectX : rect1d,
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
@@ -150,12 +150,12 @@ terra dscal_terra(
 	mgr.create_handle(&handle)
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
-	return cublas.cublasDscal_v2(handle, n, &ALPHA, rawX.ptr, rawX.offset)
+	return cublas.cublasDscal_v2(handle, n, &alpha, rawX.ptr, rawX.offset)
 end
 
 terra saxpy_terra(
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	rectX : rect1d,
 	rectY : rect1d,
 	prX : c.legion_physical_region_t,
@@ -169,12 +169,12 @@ terra saxpy_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
-	return cublas.cublasSaxpy_v2(handle, n, &ALPHA, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
+	return cublas.cublasSaxpy_v2(handle, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
 terra daxpy_terra(
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	rectX : rect1d,
 	rectY : rect1d,
 	prX : c.legion_physical_region_t,
@@ -188,7 +188,7 @@ terra daxpy_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
-	return cublas.cublasDaxpy_v2(handle, n, &ALPHA, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
+	return cublas.cublasDaxpy_v2(handle, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
 terra scopy_terra(
@@ -266,7 +266,7 @@ end
 terra isamax_terra(
 	n : int,
 	rectX : rect1d,
-	RESULT : int,
+	result : int,
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
@@ -274,13 +274,13 @@ terra isamax_terra(
 	mgr.create_handle(&handle)
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
-	return cublas.cublasIsamax_v2(handle, n, rawX.ptr, rawX.offset, &RESULT)
+	return cublas.cublasIsamax_v2(handle, n, rawX.ptr, rawX.offset, &result)
 end
 
 terra idamax_terra(
 	n : int,
 	rectX : rect1d,
-	RESULT : int,
+	result : int,
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
@@ -288,13 +288,13 @@ terra idamax_terra(
 	mgr.create_handle(&handle)
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
-	return cublas.cublasIdamax_v2(handle, n, rawX.ptr, rawX.offset, &RESULT)
+	return cublas.cublasIdamax_v2(handle, n, rawX.ptr, rawX.offset, &result)
 end
 
 terra sasum_terra(
 	n : int,
 	rectX : rect1d,
-	RESULT : float,
+	result : float,
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
@@ -302,13 +302,13 @@ terra sasum_terra(
 	mgr.create_handle(&handle)
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
-	return cublas.cublasSasum_v2(handle, n, rawX.ptr, rawX.offset, &RESULT)
+	return cublas.cublasSasum_v2(handle, n, rawX.ptr, rawX.offset, &result)
 end
 
 terra dasum_terra(
 	n : int,
 	rectX : rect1d,
-	RESULT : double,
+	result : double,
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
@@ -316,17 +316,157 @@ terra dasum_terra(
 	mgr.create_handle(&handle)
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
-	return cublas.cublasDasum_v2(handle, n, rawX.ptr, rawX.offset, &RESULT)
+	return cublas.cublasDasum_v2(handle, n, rawX.ptr, rawX.offset, &result)
+end
+
+terra srot_terra(
+	n : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	c : float,
+	s : float,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t)
+
+	var handle : cublas.cublasHandle_t
+	mgr.create_handle(&handle)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	return cublas.cublasSrot_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, &c, &s)
+end
+
+terra drot_terra(
+	n : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	c : double,
+	s : double,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t)
+
+	var handle : cublas.cublasHandle_t
+	mgr.create_handle(&handle)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	return cublas.cublasDrot_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, &c, &s)
+end
+
+terra srotg_terra(
+	a : float,
+	b : float,
+	c : float,
+	s : float)
+
+	var handle : cublas.cublasHandle_t
+	mgr.create_handle(&handle)
+	return cublas.cublasSrotg_v2(handle, &a, &b, &c, &s)
+end
+
+terra drotg_terra(
+	a : double,
+	b : double,
+	c : double,
+	s : double)
+
+	var handle : cublas.cublasHandle_t
+	mgr.create_handle(&handle)
+	return cublas.cublasDrotg_v2(handle, &a, &b, &c, &s)
+end
+
+terra srotm_terra(
+	n : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	rectPARAM : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t,
+	prPARAM : c.legion_physical_region_t,
+	fldPARAM : c.legion_field_id_t)
+
+	var handle : cublas.cublasHandle_t
+	mgr.create_handle(&handle)
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var rawPARAM : float_ptr
+	[get_raw_ptr_factory(1, float, rectPARAM, prPARAM, fldPARAM, rawPARAM, float_ptr)]
+	return cublas.cublasSrotm_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawPARAM.ptr)
+end
+
+terra drotm_terra(
+	n : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	rectPARAM : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t,
+	prPARAM : c.legion_physical_region_t,
+	fldPARAM : c.legion_field_id_t)
+
+	var handle : cublas.cublasHandle_t
+	mgr.create_handle(&handle)
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var rawPARAM : double_ptr
+	[get_raw_ptr_factory(1, double, rectPARAM, prPARAM, fldPARAM, rawPARAM, double_ptr)]
+	return cublas.cublasDrotm_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawPARAM.ptr)
+end
+
+terra srotmg_terra(
+	d1 : float,
+	d2 : float,
+	x1 : float,
+	y1 : float,
+	rectPARAM : rect1d,
+	prPARAM : c.legion_physical_region_t,
+	fldPARAM : c.legion_field_id_t)
+
+	var handle : cublas.cublasHandle_t
+	mgr.create_handle(&handle)
+	var rawPARAM : float_ptr
+	[get_raw_ptr_factory(1, float, rectPARAM, prPARAM, fldPARAM, rawPARAM, float_ptr)]
+	return cublas.cublasSrotmg_v2(handle, &d1, &d2, &x1, &y1, rawPARAM.ptr)
+end
+
+terra drotmg_terra(
+	d1 : double,
+	d2 : double,
+	x1 : double,
+	y1 : double,
+	rectPARAM : rect1d,
+	prPARAM : c.legion_physical_region_t,
+	fldPARAM : c.legion_field_id_t)
+
+	var handle : cublas.cublasHandle_t
+	mgr.create_handle(&handle)
+	var rawPARAM : double_ptr
+	[get_raw_ptr_factory(1, double, rectPARAM, prPARAM, fldPARAM, rawPARAM, double_ptr)]
+	return cublas.cublasDrotmg_v2(handle, &d1, &d2, &x1, &y1, rawPARAM.ptr)
 end
 
 terra sgemv_terra(
 	trans : int,
 	m : int,
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	rectA : rect2d,
 	rectX : rect1d,
-	BETA : float,
+	beta : float,
 	rectY : rect1d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -343,17 +483,17 @@ terra sgemv_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
-	return cublas.cublasSgemv_v2(handle, trans, m, n, &ALPHA, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &BETA, rawY.ptr, rawY.offset)
+	return cublas.cublasSgemv_v2(handle, trans, m, n, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
 terra dgemv_terra(
 	trans : int,
 	m : int,
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	rectA : rect2d,
 	rectX : rect1d,
-	BETA : double,
+	beta : double,
 	rectY : rect1d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -370,7 +510,7 @@ terra dgemv_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
-	return cublas.cublasDgemv_v2(handle, trans, m, n, &ALPHA, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &BETA, rawY.ptr, rawY.offset)
+	return cublas.cublasDgemv_v2(handle, trans, m, n, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
 terra sgbmv_terra(
@@ -379,10 +519,10 @@ terra sgbmv_terra(
 	n : int,
 	kl : int,
 	ku : int,
-	ALPHA : float,
+	alpha : float,
 	rectA : rect2d,
 	rectX : rect1d,
-	BETA : float,
+	beta : float,
 	rectY : rect1d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -399,7 +539,7 @@ terra sgbmv_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
-	return cublas.cublasSgbmv_v2(handle, trans, m, n, kl, ku, &ALPHA, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &BETA, rawY.ptr, rawY.offset)
+	return cublas.cublasSgbmv_v2(handle, trans, m, n, kl, ku, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
 terra dgbmv_terra(
@@ -408,10 +548,10 @@ terra dgbmv_terra(
 	n : int,
 	kl : int,
 	ku : int,
-	ALPHA : double,
+	alpha : double,
 	rectA : rect2d,
 	rectX : rect1d,
-	BETA : double,
+	beta : double,
 	rectY : rect1d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -428,7 +568,7 @@ terra dgbmv_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
-	return cublas.cublasDgbmv_v2(handle, trans, m, n, kl, ku, &ALPHA, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &BETA, rawY.ptr, rawY.offset)
+	return cublas.cublasDgbmv_v2(handle, trans, m, n, kl, ku, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
 terra strmv_terra(
@@ -690,10 +830,10 @@ end
 terra ssymv_terra(
 	uplo : int,
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	rectA : rect2d,
 	rectX : rect1d,
-	BETA : float,
+	beta : float,
 	rectY : rect1d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -710,16 +850,16 @@ terra ssymv_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
-	return cublas.cublasSsymv_v2(handle, uplo, n, &ALPHA, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &BETA, rawY.ptr, rawY.offset)
+	return cublas.cublasSsymv_v2(handle, uplo, n, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
 terra dsymv_terra(
 	uplo : int,
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	rectA : rect2d,
 	rectX : rect1d,
-	BETA : double,
+	beta : double,
 	rectY : rect1d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -736,17 +876,17 @@ terra dsymv_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
-	return cublas.cublasDsymv_v2(handle, uplo, n, &ALPHA, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &BETA, rawY.ptr, rawY.offset)
+	return cublas.cublasDsymv_v2(handle, uplo, n, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
 terra ssbmv_terra(
 	uplo : int,
 	n : int,
 	k : int,
-	ALPHA : float,
+	alpha : float,
 	rectA : rect2d,
 	rectX : rect1d,
-	BETA : float,
+	beta : float,
 	rectY : rect1d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -763,17 +903,17 @@ terra ssbmv_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
-	return cublas.cublasSsbmv_v2(handle, uplo, n, k, &ALPHA, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &BETA, rawY.ptr, rawY.offset)
+	return cublas.cublasSsbmv_v2(handle, uplo, n, k, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
 terra dsbmv_terra(
 	uplo : int,
 	n : int,
 	k : int,
-	ALPHA : double,
+	alpha : double,
 	rectA : rect2d,
 	rectX : rect1d,
-	BETA : double,
+	beta : double,
 	rectY : rect1d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -790,16 +930,16 @@ terra dsbmv_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
-	return cublas.cublasDsbmv_v2(handle, uplo, n, k, &ALPHA, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &BETA, rawY.ptr, rawY.offset)
+	return cublas.cublasDsbmv_v2(handle, uplo, n, k, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
 terra sspmv_terra(
 	uplo : int,
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	rectAP : rect1d,
 	rectX : rect1d,
-	BETA : float,
+	beta : float,
 	rectY : rect1d,
 	prAP : c.legion_physical_region_t,
 	fldAP : c.legion_field_id_t,
@@ -816,16 +956,16 @@ terra sspmv_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
-	return cublas.cublasSspmv_v2(handle, uplo, n, &ALPHA, rawAP.ptr, rawX.ptr, rawX.offset, &BETA, rawY.ptr, rawY.offset)
+	return cublas.cublasSspmv_v2(handle, uplo, n, &alpha, rawAP.ptr, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
 terra dspmv_terra(
 	uplo : int,
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	rectAP : rect1d,
 	rectX : rect1d,
-	BETA : double,
+	beta : double,
 	rectY : rect1d,
 	prAP : c.legion_physical_region_t,
 	fldAP : c.legion_field_id_t,
@@ -842,13 +982,13 @@ terra dspmv_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
-	return cublas.cublasDspmv_v2(handle, uplo, n, &ALPHA, rawAP.ptr, rawX.ptr, rawX.offset, &BETA, rawY.ptr, rawY.offset)
+	return cublas.cublasDspmv_v2(handle, uplo, n, &alpha, rawAP.ptr, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
 terra sger_terra(
 	m : int,
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	rectX : rect1d,
 	rectY : rect1d,
 	rectA : rect2d,
@@ -867,13 +1007,13 @@ terra sger_terra(
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
-	return cublas.cublasSger_v2(handle, m, n, &ALPHA, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
+	return cublas.cublasSger_v2(handle, m, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
 end
 
 terra dger_terra(
 	m : int,
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	rectX : rect1d,
 	rectY : rect1d,
 	rectA : rect2d,
@@ -892,13 +1032,13 @@ terra dger_terra(
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
-	return cublas.cublasDger_v2(handle, m, n, &ALPHA, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
+	return cublas.cublasDger_v2(handle, m, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
 end
 
 terra ssyr_terra(
 	uplo : int,
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	rectX : rect1d,
 	rectA : rect2d,
 	prX : c.legion_physical_region_t,
@@ -912,13 +1052,13 @@ terra ssyr_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
-	return cublas.cublasSsyr_v2(handle, uplo, n, &ALPHA, rawX.ptr, rawX.offset, rawA.ptr, rawA.offset)
+	return cublas.cublasSsyr_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawA.ptr, rawA.offset)
 end
 
 terra dsyr_terra(
 	uplo : int,
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	rectX : rect1d,
 	rectA : rect2d,
 	prX : c.legion_physical_region_t,
@@ -932,13 +1072,13 @@ terra dsyr_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
-	return cublas.cublasDsyr_v2(handle, uplo, n, &ALPHA, rawX.ptr, rawX.offset, rawA.ptr, rawA.offset)
+	return cublas.cublasDsyr_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawA.ptr, rawA.offset)
 end
 
 terra sspr_terra(
 	uplo : int,
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	rectX : rect1d,
 	rectAP : rect1d,
 	prX : c.legion_physical_region_t,
@@ -952,13 +1092,13 @@ terra sspr_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawAP : float_ptr
 	[get_raw_ptr_factory(1, float, rectAP, prAP, fldAP, rawAP, float_ptr)]
-	return cublas.cublasSspr_v2(handle, uplo, n, &ALPHA, rawX.ptr, rawX.offset, rawAP.ptr)
+	return cublas.cublasSspr_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawAP.ptr)
 end
 
 terra dspr_terra(
 	uplo : int,
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	rectX : rect1d,
 	rectAP : rect1d,
 	prX : c.legion_physical_region_t,
@@ -972,13 +1112,13 @@ terra dspr_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawAP : double_ptr
 	[get_raw_ptr_factory(1, double, rectAP, prAP, fldAP, rawAP, double_ptr)]
-	return cublas.cublasDspr_v2(handle, uplo, n, &ALPHA, rawX.ptr, rawX.offset, rawAP.ptr)
+	return cublas.cublasDspr_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawAP.ptr)
 end
 
 terra ssyr2_terra(
 	uplo : int,
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	rectX : rect1d,
 	rectY : rect1d,
 	rectA : rect2d,
@@ -997,13 +1137,13 @@ terra ssyr2_terra(
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
-	return cublas.cublasSsyr2_v2(handle, uplo, n, &ALPHA, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
+	return cublas.cublasSsyr2_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
 end
 
 terra dsyr2_terra(
 	uplo : int,
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	rectX : rect1d,
 	rectY : rect1d,
 	rectA : rect2d,
@@ -1022,13 +1162,13 @@ terra dsyr2_terra(
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
-	return cublas.cublasDsyr2_v2(handle, uplo, n, &ALPHA, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
+	return cublas.cublasDsyr2_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
 end
 
 terra sspr2_terra(
 	uplo : int,
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	rectX : rect1d,
 	rectY : rect1d,
 	rectAP : rect1d,
@@ -1047,13 +1187,13 @@ terra sspr2_terra(
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
 	var rawAP : float_ptr
 	[get_raw_ptr_factory(1, float, rectAP, prAP, fldAP, rawAP, float_ptr)]
-	return cublas.cublasSspr2_v2(handle, uplo, n, &ALPHA, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawAP.ptr)
+	return cublas.cublasSspr2_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawAP.ptr)
 end
 
 terra dspr2_terra(
 	uplo : int,
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	rectX : rect1d,
 	rectY : rect1d,
 	rectAP : rect1d,
@@ -1072,7 +1212,7 @@ terra dspr2_terra(
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
 	var rawAP : double_ptr
 	[get_raw_ptr_factory(1, double, rectAP, prAP, fldAP, rawAP, double_ptr)]
-	return cublas.cublasDspr2_v2(handle, uplo, n, &ALPHA, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawAP.ptr)
+	return cublas.cublasDspr2_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawAP.ptr)
 end
 
 terra sgemm_terra(
@@ -1081,10 +1221,10 @@ terra sgemm_terra(
 	m : int,
 	n : int,
 	k : int,
-	ALPHA : float,
+	alpha : float,
 	rectA : rect2d,
 	rectB : rect2d,
-	BETA : float,
+	beta : float,
 	rectC : rect2d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -1101,7 +1241,7 @@ terra sgemm_terra(
 	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
 	var rawC : float_ptr
 	[get_raw_ptr_factory(2, float, rectC, prC, fldC, rawC, float_ptr)]
-	return cublas.cublasSgemm_v2(handle, transa, transb, m, n, k, &ALPHA, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &BETA, rawC.ptr, rawC.offset)
+	return cublas.cublasSgemm_v2(handle, transa, transb, m, n, k, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &beta, rawC.ptr, rawC.offset)
 end
 
 terra dgemm_terra(
@@ -1110,10 +1250,10 @@ terra dgemm_terra(
 	m : int,
 	n : int,
 	k : int,
-	ALPHA : double,
+	alpha : double,
 	rectA : rect2d,
 	rectB : rect2d,
-	BETA : double,
+	beta : double,
 	rectC : rect2d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -1130,7 +1270,7 @@ terra dgemm_terra(
 	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
 	var rawC : double_ptr
 	[get_raw_ptr_factory(2, double, rectC, prC, fldC, rawC, double_ptr)]
-	return cublas.cublasDgemm_v2(handle, transa, transb, m, n, k, &ALPHA, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &BETA, rawC.ptr, rawC.offset)
+	return cublas.cublasDgemm_v2(handle, transa, transb, m, n, k, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &beta, rawC.ptr, rawC.offset)
 end
 
 terra ssyrk_terra(
@@ -1138,9 +1278,9 @@ terra ssyrk_terra(
 	trans : int,
 	n : int,
 	k : int,
-	ALPHA : float,
+	alpha : float,
 	rectA : rect2d,
-	BETA : float,
+	beta : float,
 	rectC : rect2d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -1153,7 +1293,7 @@ terra ssyrk_terra(
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawC : float_ptr
 	[get_raw_ptr_factory(2, float, rectC, prC, fldC, rawC, float_ptr)]
-	return cublas.cublasSsyrk_v2(handle, uplo, trans, n, k, &ALPHA, rawA.ptr, rawA.offset, &BETA, rawC.ptr, rawC.offset)
+	return cublas.cublasSsyrk_v2(handle, uplo, trans, n, k, &alpha, rawA.ptr, rawA.offset, &beta, rawC.ptr, rawC.offset)
 end
 
 terra dsyrk_terra(
@@ -1161,9 +1301,9 @@ terra dsyrk_terra(
 	trans : int,
 	n : int,
 	k : int,
-	ALPHA : double,
+	alpha : double,
 	rectA : rect2d,
-	BETA : double,
+	beta : double,
 	rectC : rect2d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -1176,7 +1316,7 @@ terra dsyrk_terra(
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawC : double_ptr
 	[get_raw_ptr_factory(2, double, rectC, prC, fldC, rawC, double_ptr)]
-	return cublas.cublasDsyrk_v2(handle, uplo, trans, n, k, &ALPHA, rawA.ptr, rawA.offset, &BETA, rawC.ptr, rawC.offset)
+	return cublas.cublasDsyrk_v2(handle, uplo, trans, n, k, &alpha, rawA.ptr, rawA.offset, &beta, rawC.ptr, rawC.offset)
 end
 
 terra ssyr2k_terra(
@@ -1184,10 +1324,10 @@ terra ssyr2k_terra(
 	trans : int,
 	n : int,
 	k : int,
-	ALPHA : float,
+	alpha : float,
 	rectA : rect2d,
 	rectB : rect2d,
-	BETA : float,
+	beta : float,
 	rectC : rect2d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -1204,7 +1344,7 @@ terra ssyr2k_terra(
 	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
 	var rawC : float_ptr
 	[get_raw_ptr_factory(2, float, rectC, prC, fldC, rawC, float_ptr)]
-	return cublas.cublasSsyr2k_v2(handle, uplo, trans, n, k, &ALPHA, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &BETA, rawC.ptr, rawC.offset)
+	return cublas.cublasSsyr2k_v2(handle, uplo, trans, n, k, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &beta, rawC.ptr, rawC.offset)
 end
 
 terra dsyr2k_terra(
@@ -1212,10 +1352,10 @@ terra dsyr2k_terra(
 	trans : int,
 	n : int,
 	k : int,
-	ALPHA : double,
+	alpha : double,
 	rectA : rect2d,
 	rectB : rect2d,
-	BETA : double,
+	beta : double,
 	rectC : rect2d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -1232,7 +1372,7 @@ terra dsyr2k_terra(
 	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
 	var rawC : double_ptr
 	[get_raw_ptr_factory(2, double, rectC, prC, fldC, rawC, double_ptr)]
-	return cublas.cublasDsyr2k_v2(handle, uplo, trans, n, k, &ALPHA, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &BETA, rawC.ptr, rawC.offset)
+	return cublas.cublasDsyr2k_v2(handle, uplo, trans, n, k, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &beta, rawC.ptr, rawC.offset)
 end
 
 terra ssymm_terra(
@@ -1240,10 +1380,10 @@ terra ssymm_terra(
 	uplo : int,
 	m : int,
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	rectA : rect2d,
 	rectB : rect2d,
-	BETA : float,
+	beta : float,
 	rectC : rect2d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -1260,7 +1400,7 @@ terra ssymm_terra(
 	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
 	var rawC : float_ptr
 	[get_raw_ptr_factory(2, float, rectC, prC, fldC, rawC, float_ptr)]
-	return cublas.cublasSsymm_v2(handle, side, uplo, m, n, &ALPHA, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &BETA, rawC.ptr, rawC.offset)
+	return cublas.cublasSsymm_v2(handle, side, uplo, m, n, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &beta, rawC.ptr, rawC.offset)
 end
 
 terra dsymm_terra(
@@ -1268,10 +1408,10 @@ terra dsymm_terra(
 	uplo : int,
 	m : int,
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	rectA : rect2d,
 	rectB : rect2d,
-	BETA : double,
+	beta : double,
 	rectC : rect2d,
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t,
@@ -1288,7 +1428,7 @@ terra dsymm_terra(
 	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
 	var rawC : double_ptr
 	[get_raw_ptr_factory(2, double, rectC, prC, fldC, rawC, double_ptr)]
-	return cublas.cublasDsymm_v2(handle, side, uplo, m, n, &ALPHA, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &BETA, rawC.ptr, rawC.offset)
+	return cublas.cublasDsymm_v2(handle, side, uplo, m, n, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &beta, rawC.ptr, rawC.offset)
 end
 
 terra strsm_terra(
@@ -1298,7 +1438,7 @@ terra strsm_terra(
 	diag : int,
 	m : int,
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	rectA : rect2d,
 	rectB : rect2d,
 	prA : c.legion_physical_region_t,
@@ -1312,7 +1452,7 @@ terra strsm_terra(
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawB : float_ptr
 	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
-	return cublas.cublasStrsm_v2(handle, side, uplo, trans, diag, m, n, &ALPHA, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
+	return cublas.cublasStrsm_v2(handle, side, uplo, trans, diag, m, n, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
 end
 
 terra dtrsm_terra(
@@ -1322,7 +1462,7 @@ terra dtrsm_terra(
 	diag : int,
 	m : int,
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	rectA : rect2d,
 	rectB : rect2d,
 	prA : c.legion_physical_region_t,
@@ -1336,7 +1476,7 @@ terra dtrsm_terra(
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawB : double_ptr
 	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
-	return cublas.cublasDtrsm_v2(handle, side, uplo, trans, diag, m, n, &ALPHA, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
+	return cublas.cublasDtrsm_v2(handle, side, uplo, trans, diag, m, n, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
 end
 
 terra strmm_terra(
@@ -1346,7 +1486,7 @@ terra strmm_terra(
 	diag : int,
 	m : int,
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	rectA : rect2d,
 	rectB : rect2d,
 	rectC : rect2d,
@@ -1365,7 +1505,7 @@ terra strmm_terra(
 	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
 	var rawC : float_ptr
 	[get_raw_ptr_factory(2, float, rectC, prC, fldC, rawC, float_ptr)]
-	return cublas.cublasStrmm_v2(handle, side, uplo, trans, diag, m, n, &ALPHA, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, rawC.ptr, rawC.offset)
+	return cublas.cublasStrmm_v2(handle, side, uplo, trans, diag, m, n, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, rawC.ptr, rawC.offset)
 end
 
 terra dtrmm_terra(
@@ -1375,7 +1515,7 @@ terra dtrmm_terra(
 	diag : int,
 	m : int,
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	rectA : rect2d,
 	rectB : rect2d,
 	rectC : rect2d,
@@ -1394,99 +1534,99 @@ terra dtrmm_terra(
 	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
 	var rawC : double_ptr
 	[get_raw_ptr_factory(2, double, rectC, prC, fldC, rawC, double_ptr)]
-	return cublas.cublasDtrmm_v2(handle, side, uplo, trans, diag, m, n, &ALPHA, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, rawC.ptr, rawC.offset)
+	return cublas.cublasDtrmm_v2(handle, side, uplo, trans, diag, m, n, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, rawC.ptr, rawC.offset)
 end
 
 
 __demand(__cuda, __leaf)
 task snrm2(
 	X : region(ispace(int1d), float),
-	RESULT : float)
+	result : float)
 where
 	reads(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = (sizeX-0)/1
-	return snrm2_terra(n, rectX, RESULT, __physical(X)[0], __fields(X)[0])
+	return snrm2_terra(n, rectX, result, __physical(X)[0], __fields(X)[0])
 end
 
 __demand(__cuda, __leaf)
 task dnrm2(
 	X : region(ispace(int1d), double),
-	RESULT : double)
+	result : double)
 where
 	reads(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = (sizeX-0)/1
-	return dnrm2_terra(n, rectX, RESULT, __physical(X)[0], __fields(X)[0])
+	return dnrm2_terra(n, rectX, result, __physical(X)[0], __fields(X)[0])
 end
 
 __demand(__cuda, __leaf)
 task sdot(
 	X : region(ispace(int1d), float),
 	Y : region(ispace(int1d), float),
-	RESULT : float)
+	result : float)
 where
 	reads(X),
 	reads(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var n = (sizeX-0)/1
-	return sdot_terra(n, rectX, rectY, RESULT, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+	return sdot_terra(n, rectX, rectY, result, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
 __demand(__cuda, __leaf)
 task ddot(
 	X : region(ispace(int1d), double),
 	Y : region(ispace(int1d), double),
-	RESULT : double)
+	result : double)
 where
 	reads(X),
 	reads(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var n = (sizeX-0)/1
-	return ddot_terra(n, rectX, rectY, RESULT, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+	return ddot_terra(n, rectX, rectY, result, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
 __demand(__cuda, __leaf)
 task sscal(
-	ALPHA : float,
+	alpha : float,
 	X : region(ispace(int1d), float))
 where
 	reads writes(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = (sizeX-0)/1
-	return sscal_terra(n, ALPHA, rectX, __physical(X)[0], __fields(X)[0])
+	return sscal_terra(n, alpha, rectX, __physical(X)[0], __fields(X)[0])
 end
 
 __demand(__cuda, __leaf)
 task dscal(
-	ALPHA : double,
+	alpha : double,
 	X : region(ispace(int1d), double))
 where
 	reads writes(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = (sizeX-0)/1
-	return dscal_terra(n, ALPHA, rectX, __physical(X)[0], __fields(X)[0])
+	return dscal_terra(n, alpha, rectX, __physical(X)[0], __fields(X)[0])
 end
 
 __demand(__cuda, __leaf)
 task saxpy(
-	ALPHA : float,
+	alpha : float,
 	X : region(ispace(int1d), float),
 	Y : region(ispace(int1d), float))
 where
@@ -1494,16 +1634,16 @@ where
 	reads writes(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var n = (sizeX-0)/1
-	return saxpy_terra(n, ALPHA, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+	return saxpy_terra(n, alpha, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
 __demand(__cuda, __leaf)
 task daxpy(
-	ALPHA : double,
+	alpha : double,
 	X : region(ispace(int1d), double),
 	Y : region(ispace(int1d), double))
 where
@@ -1511,11 +1651,11 @@ where
 	reads writes(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var n = (sizeX-0)/1
-	return daxpy_terra(n, ALPHA, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+	return daxpy_terra(n, alpha, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
 __demand(__cuda, __leaf)
@@ -1527,9 +1667,9 @@ where
 	reads writes(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var n = (sizeX-0)/1
 	return scopy_terra(n, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -1543,9 +1683,9 @@ where
 	reads writes(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var n = (sizeX-0)/1
 	return dcopy_terra(n, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -1559,9 +1699,9 @@ where
 	reads writes(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var n = (sizeX-0)/1
 	return sswap_terra(n, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -1575,9 +1715,9 @@ where
 	reads writes(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var n = (sizeX-0)/1
 	return dswap_terra(n, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -1585,62 +1725,186 @@ end
 __demand(__cuda, __leaf)
 task isamax(
 	X : region(ispace(int1d), float),
-	RESULT : int)
+	result : int)
 where
 	reads(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = (sizeX-0)/1
-	return isamax_terra(n, rectX, RESULT, __physical(X)[0], __fields(X)[0])
+	return isamax_terra(n, rectX, result, __physical(X)[0], __fields(X)[0])
 end
 
 __demand(__cuda, __leaf)
 task idamax(
 	X : region(ispace(int1d), double),
-	RESULT : int)
+	result : int)
 where
 	reads(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = (sizeX-0)/1
-	return idamax_terra(n, rectX, RESULT, __physical(X)[0], __fields(X)[0])
+	return idamax_terra(n, rectX, result, __physical(X)[0], __fields(X)[0])
 end
 
 __demand(__cuda, __leaf)
 task sasum(
 	X : region(ispace(int1d), float),
-	RESULT : float)
+	result : float)
 where
 	reads(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = (sizeX-0)/1
-	return sasum_terra(n, rectX, RESULT, __physical(X)[0], __fields(X)[0])
+	return sasum_terra(n, rectX, result, __physical(X)[0], __fields(X)[0])
 end
 
 __demand(__cuda, __leaf)
 task dasum(
 	X : region(ispace(int1d), double),
-	RESULT : double)
+	result : double)
 where
 	reads(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = (sizeX-0)/1
-	return dasum_terra(n, rectX, RESULT, __physical(X)[0], __fields(X)[0])
+	return dasum_terra(n, rectX, result, __physical(X)[0], __fields(X)[0])
+end
+
+__demand(__cuda, __leaf)
+task srot(
+	X : region(ispace(int1d), float),
+	Y : region(ispace(int1d), float),
+	c : float,
+	s : float)
+where
+	reads writes(X),
+	reads writes(Y)
+do
+	var rectX = X.bounds
+	var sizeX = rectX.hi - rectX.lo + {1}
+	var rectY = Y.bounds
+	var sizeY = rectY.hi - rectY.lo + {1}
+	var n = (sizeX-1-0)/1+1
+	return srot_terra(n, rectX, rectY, c, s, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+end
+
+__demand(__cuda, __leaf)
+task drot(
+	X : region(ispace(int1d), double),
+	Y : region(ispace(int1d), double),
+	c : double,
+	s : double)
+where
+	reads writes(X),
+	reads writes(Y)
+do
+	var rectX = X.bounds
+	var sizeX = rectX.hi - rectX.lo + {1}
+	var rectY = Y.bounds
+	var sizeY = rectY.hi - rectY.lo + {1}
+	var n = (sizeX-1-0)/1+1
+	return drot_terra(n, rectX, rectY, c, s, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+end
+
+__demand(__cuda, __leaf)
+task srotg(
+	a : float,
+	b : float,
+	c : float,
+	s : float)
+	return srotg_terra(a, b, c, s)
+end
+
+__demand(__cuda, __leaf)
+task drotg(
+	a : double,
+	b : double,
+	c : double,
+	s : double)
+	return drotg_terra(a, b, c, s)
+end
+
+__demand(__cuda, __leaf)
+task srotm(
+	X : region(ispace(int1d), float),
+	Y : region(ispace(int1d), float),
+	PARAM : region(ispace(int1d), float))
+where
+	reads writes(X),
+	reads writes(Y),
+	reads(PARAM)
+do
+	var rectX = X.bounds
+	var sizeX = rectX.hi - rectX.lo + {1}
+	var rectY = Y.bounds
+	var sizeY = rectY.hi - rectY.lo + {1}
+	var rectPARAM = PARAM.bounds
+	var sizePARAM = rectPARAM.hi - rectPARAM.lo + {1}
+	var n = (sizeX-0)/1
+	return srotm_terra(n, rectX, rectY, rectPARAM, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(PARAM)[0], __fields(PARAM)[0])
+end
+
+__demand(__cuda, __leaf)
+task drotm(
+	X : region(ispace(int1d), double),
+	Y : region(ispace(int1d), double),
+	PARAM : region(ispace(int1d), double))
+where
+	reads writes(X),
+	reads writes(Y),
+	reads(PARAM)
+do
+	var rectX = X.bounds
+	var sizeX = rectX.hi - rectX.lo + {1}
+	var rectY = Y.bounds
+	var sizeY = rectY.hi - rectY.lo + {1}
+	var rectPARAM = PARAM.bounds
+	var sizePARAM = rectPARAM.hi - rectPARAM.lo + {1}
+	var n = (sizeX-0)/1
+	return drotm_terra(n, rectX, rectY, rectPARAM, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(PARAM)[0], __fields(PARAM)[0])
+end
+
+__demand(__cuda, __leaf)
+task srotmg(
+	d1 : float,
+	d2 : float,
+	x1 : float,
+	y1 : float,
+	PARAM : region(ispace(int1d), float))
+where
+	reads writes(PARAM)
+do
+	var rectPARAM = PARAM.bounds
+	var sizePARAM = rectPARAM.hi - rectPARAM.lo + {1}
+	return srotmg_terra(d1, d2, x1, y1, rectPARAM, __physical(PARAM)[0], __fields(PARAM)[0])
+end
+
+__demand(__cuda, __leaf)
+task drotmg(
+	d1 : double,
+	d2 : double,
+	x1 : double,
+	y1 : double,
+	PARAM : region(ispace(int1d), double))
+where
+	reads writes(PARAM)
+do
+	var rectPARAM = PARAM.bounds
+	var sizePARAM = rectPARAM.hi - rectPARAM.lo + {1}
+	return drotmg_terra(d1, d2, x1, y1, rectPARAM, __physical(PARAM)[0], __fields(PARAM)[0])
 end
 
 __demand(__cuda, __leaf)
 task sgemv(
 	trans : int,
-	ALPHA : float,
+	alpha : float,
 	A : region(ispace(int2d), float),
 	X : region(ispace(int1d), float),
-	BETA : float,
+	beta : float,
 	Y : region(ispace(int1d), float))
 where
 	reads(A),
@@ -1650,21 +1914,21 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var m = sizeA.x
 	var n = sizeA.y
-	return sgemv_terra(trans, m, n, ALPHA, rectA, rectX, BETA, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+	return sgemv_terra(trans, m, n, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
 __demand(__cuda, __leaf)
 task dgemv(
 	trans : int,
-	ALPHA : double,
+	alpha : double,
 	A : region(ispace(int2d), double),
 	X : region(ispace(int1d), double),
-	BETA : double,
+	beta : double,
 	Y : region(ispace(int1d), double))
 where
 	reads(A),
@@ -1674,12 +1938,12 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var m = sizeA.x
 	var n = sizeA.y
-	return dgemv_terra(trans, m, n, ALPHA, rectA, rectX, BETA, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+	return dgemv_terra(trans, m, n, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
 __demand(__cuda, __leaf)
@@ -1689,10 +1953,10 @@ task sgbmv(
 	n : int,
 	kl : int,
 	ku : int,
-	ALPHA : float,
+	alpha : float,
 	A : region(ispace(int2d), float),
 	X : region(ispace(int1d), float),
-	BETA : float,
+	beta : float,
 	Y : region(ispace(int1d), float))
 where
 	reads(A),
@@ -1702,10 +1966,10 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
-	return sgbmv_terra(trans, m, n, kl, ku, ALPHA, rectA, rectX, BETA, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+	var sizeY = rectY.hi - rectY.lo + {1}
+	return sgbmv_terra(trans, m, n, kl, ku, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
 __demand(__cuda, __leaf)
@@ -1715,10 +1979,10 @@ task dgbmv(
 	n : int,
 	kl : int,
 	ku : int,
-	ALPHA : double,
+	alpha : double,
 	A : region(ispace(int2d), double),
 	X : region(ispace(int1d), double),
-	BETA : double,
+	beta : double,
 	Y : region(ispace(int1d), double))
 where
 	reads(A),
@@ -1728,10 +1992,10 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
-	return dgbmv_terra(trans, m, n, kl, ku, ALPHA, rectA, rectX, BETA, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+	var sizeY = rectY.hi - rectY.lo + {1}
+	return dgbmv_terra(trans, m, n, kl, ku, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
 __demand(__cuda, __leaf)
@@ -1748,7 +2012,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = sizeA.x
 	return strmv_terra(uplo, trans, diag, n, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1767,7 +2031,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = sizeA.x
 	return dtrmv_terra(uplo, trans, diag, n, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1787,7 +2051,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = sizeA.y
 	return stbmv_terra(uplo, trans, diag, n, k, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1807,7 +2071,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = sizeA.y
 	return dtbmv_terra(uplo, trans, diag, n, k, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1825,9 +2089,9 @@ where
 	reads writes(X)
 do
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	return stpmv_terra(uplo, trans, diag, n, rectAP, rectX, __physical(AP)[0], __fields(AP)[0], __physical(X)[0], __fields(X)[0])
 end
 
@@ -1844,9 +2108,9 @@ where
 	reads writes(X)
 do
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	return dtpmv_terra(uplo, trans, diag, n, rectAP, rectX, __physical(AP)[0], __fields(AP)[0], __physical(X)[0], __fields(X)[0])
 end
 
@@ -1864,7 +2128,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = sizeA.x
 	return strsv_terra(uplo, trans, diag, n, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1883,7 +2147,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = sizeA.x
 	return dtrsv_terra(uplo, trans, diag, n, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1901,9 +2165,9 @@ where
 	reads writes(X)
 do
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	return stpsv_terra(uplo, trans, diag, n, rectAP, rectX, __physical(AP)[0], __fields(AP)[0], __physical(X)[0], __fields(X)[0])
 end
 
@@ -1920,9 +2184,9 @@ where
 	reads writes(X)
 do
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	return dtpsv_terra(uplo, trans, diag, n, rectAP, rectX, __physical(AP)[0], __fields(AP)[0], __physical(X)[0], __fields(X)[0])
 end
 
@@ -1941,7 +2205,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = sizeA.y
 	return stbsv_terra(uplo, trans, diag, n, k, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1961,7 +2225,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var n = sizeA.y
 	return dtbsv_terra(uplo, trans, diag, n, k, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1969,10 +2233,10 @@ end
 __demand(__cuda, __leaf)
 task ssymv(
 	uplo : int,
-	ALPHA : float,
+	alpha : float,
 	A : region(ispace(int2d), float),
 	X : region(ispace(int1d), float),
-	BETA : float,
+	beta : float,
 	Y : region(ispace(int1d), float))
 where
 	reads(A),
@@ -1982,20 +2246,20 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var n = sizeA.x
-	return ssymv_terra(uplo, n, ALPHA, rectA, rectX, BETA, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+	return ssymv_terra(uplo, n, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
 __demand(__cuda, __leaf)
 task dsymv(
 	uplo : int,
-	ALPHA : double,
+	alpha : double,
 	A : region(ispace(int2d), double),
 	X : region(ispace(int1d), double),
-	BETA : double,
+	beta : double,
 	Y : region(ispace(int1d), double))
 where
 	reads(A),
@@ -2005,21 +2269,21 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var n = sizeA.x
-	return dsymv_terra(uplo, n, ALPHA, rectA, rectX, BETA, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+	return dsymv_terra(uplo, n, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
 __demand(__cuda, __leaf)
 task ssbmv(
 	uplo : int,
 	k : int,
-	ALPHA : float,
+	alpha : float,
 	A : region(ispace(int2d), float),
 	X : region(ispace(int1d), float),
-	BETA : float,
+	beta : float,
 	Y : region(ispace(int1d), float))
 where
 	reads(A),
@@ -2029,21 +2293,21 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var n = sizeA.y
-	return ssbmv_terra(uplo, n, k, ALPHA, rectA, rectX, BETA, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+	return ssbmv_terra(uplo, n, k, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
 __demand(__cuda, __leaf)
 task dsbmv(
 	uplo : int,
 	k : int,
-	ALPHA : double,
+	alpha : double,
 	A : region(ispace(int2d), double),
 	X : region(ispace(int1d), double),
-	BETA : double,
+	beta : double,
 	Y : region(ispace(int1d), double))
 where
 	reads(A),
@@ -2053,21 +2317,21 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var n = sizeA.y
-	return dsbmv_terra(uplo, n, k, ALPHA, rectA, rectX, BETA, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+	return dsbmv_terra(uplo, n, k, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
 __demand(__cuda, __leaf)
 task sspmv(
 	uplo : int,
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	AP : region(ispace(int1d), float),
 	X : region(ispace(int1d), float),
-	BETA : float,
+	beta : float,
 	Y : region(ispace(int1d), float))
 where
 	reads(AP),
@@ -2075,22 +2339,22 @@ where
 	reads writes(Y)
 do
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
-	return sspmv_terra(uplo, n, ALPHA, rectAP, rectX, BETA, rectY, __physical(AP)[0], __fields(AP)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+	var sizeY = rectY.hi - rectY.lo + {1}
+	return sspmv_terra(uplo, n, alpha, rectAP, rectX, beta, rectY, __physical(AP)[0], __fields(AP)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
 __demand(__cuda, __leaf)
 task dspmv(
 	uplo : int,
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	AP : region(ispace(int1d), double),
 	X : region(ispace(int1d), double),
-	BETA : double,
+	beta : double,
 	Y : region(ispace(int1d), double))
 where
 	reads(AP),
@@ -2098,17 +2362,17 @@ where
 	reads writes(Y)
 do
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
-	return dspmv_terra(uplo, n, ALPHA, rectAP, rectX, BETA, rectY, __physical(AP)[0], __fields(AP)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+	var sizeY = rectY.hi - rectY.lo + {1}
+	return dspmv_terra(uplo, n, alpha, rectAP, rectX, beta, rectY, __physical(AP)[0], __fields(AP)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
 __demand(__cuda, __leaf)
 task sger(
-	ALPHA : float,
+	alpha : float,
 	X : region(ispace(int1d), float),
 	Y : region(ispace(int1d), float),
 	A : region(ispace(int2d), float))
@@ -2118,19 +2382,19 @@ where
 	reads writes(A)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var m = sizeX
 	var n = sizeY
-	return sger_terra(m, n, ALPHA, rectX, rectY, rectA, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(A)[0], __fields(A)[0])
+	return sger_terra(m, n, alpha, rectX, rectY, rectA, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(A)[0], __fields(A)[0])
 end
 
 __demand(__cuda, __leaf)
 task dger(
-	ALPHA : double,
+	alpha : double,
 	X : region(ispace(int1d), double),
 	Y : region(ispace(int1d), double),
 	A : region(ispace(int2d), double))
@@ -2140,20 +2404,20 @@ where
 	reads writes(A)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var m = sizeX
 	var n = sizeY
-	return dger_terra(m, n, ALPHA, rectX, rectY, rectA, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(A)[0], __fields(A)[0])
+	return dger_terra(m, n, alpha, rectX, rectY, rectA, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(A)[0], __fields(A)[0])
 end
 
 __demand(__cuda, __leaf)
 task ssyr(
 	uplo : int,
-	ALPHA : float,
+	alpha : float,
 	X : region(ispace(int1d), float),
 	A : region(ispace(int2d), float))
 where
@@ -2161,17 +2425,17 @@ where
 	reads writes(A)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var n = (sizeX-1-0)/1+1
-	return ssyr_terra(uplo, n, ALPHA, rectX, rectA, __physical(X)[0], __fields(X)[0], __physical(A)[0], __fields(A)[0])
+	return ssyr_terra(uplo, n, alpha, rectX, rectA, __physical(X)[0], __fields(X)[0], __physical(A)[0], __fields(A)[0])
 end
 
 __demand(__cuda, __leaf)
 task dsyr(
 	uplo : int,
-	ALPHA : double,
+	alpha : double,
 	X : region(ispace(int1d), double),
 	A : region(ispace(int2d), double))
 where
@@ -2179,18 +2443,18 @@ where
 	reads writes(A)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var n = (sizeX-1-0)/1+1
-	return dsyr_terra(uplo, n, ALPHA, rectX, rectA, __physical(X)[0], __fields(X)[0], __physical(A)[0], __fields(A)[0])
+	return dsyr_terra(uplo, n, alpha, rectX, rectA, __physical(X)[0], __fields(X)[0], __physical(A)[0], __fields(A)[0])
 end
 
 __demand(__cuda, __leaf)
 task sspr(
 	uplo : int,
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	X : region(ispace(int1d), float),
 	AP : region(ispace(int1d), float))
 where
@@ -2198,17 +2462,17 @@ where
 	reads writes(AP)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
-	return sspr_terra(uplo, n, ALPHA, rectX, rectAP, __physical(X)[0], __fields(X)[0], __physical(AP)[0], __fields(AP)[0])
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
+	return sspr_terra(uplo, n, alpha, rectX, rectAP, __physical(X)[0], __fields(X)[0], __physical(AP)[0], __fields(AP)[0])
 end
 
 __demand(__cuda, __leaf)
 task dspr(
 	uplo : int,
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	X : region(ispace(int1d), double),
 	AP : region(ispace(int1d), double))
 where
@@ -2216,16 +2480,16 @@ where
 	reads writes(AP)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
-	return dspr_terra(uplo, n, ALPHA, rectX, rectAP, __physical(X)[0], __fields(X)[0], __physical(AP)[0], __fields(AP)[0])
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
+	return dspr_terra(uplo, n, alpha, rectX, rectAP, __physical(X)[0], __fields(X)[0], __physical(AP)[0], __fields(AP)[0])
 end
 
 __demand(__cuda, __leaf)
 task ssyr2(
 	uplo : int,
-	ALPHA : float,
+	alpha : float,
 	X : region(ispace(int1d), float),
 	Y : region(ispace(int1d), float),
 	A : region(ispace(int2d), float))
@@ -2235,9 +2499,9 @@ where
 	reads writes(A)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var n = 0
@@ -2247,13 +2511,13 @@ do
 		n = (sizeY-1-0)/1+1
 	end
 
-	return ssyr2_terra(uplo, n, ALPHA, rectX, rectY, rectA, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(A)[0], __fields(A)[0])
+	return ssyr2_terra(uplo, n, alpha, rectX, rectY, rectA, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(A)[0], __fields(A)[0])
 end
 
 __demand(__cuda, __leaf)
 task dsyr2(
 	uplo : int,
-	ALPHA : double,
+	alpha : double,
 	X : region(ispace(int1d), double),
 	Y : region(ispace(int1d), double),
 	A : region(ispace(int2d), double))
@@ -2263,9 +2527,9 @@ where
 	reads writes(A)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var n = 0
@@ -2275,14 +2539,14 @@ do
 		n = (sizeY-1-0)/1+1
 	end
 
-	return dsyr2_terra(uplo, n, ALPHA, rectX, rectY, rectA, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(A)[0], __fields(A)[0])
+	return dsyr2_terra(uplo, n, alpha, rectX, rectY, rectA, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(A)[0], __fields(A)[0])
 end
 
 __demand(__cuda, __leaf)
 task sspr2(
 	uplo : int,
 	n : int,
-	ALPHA : float,
+	alpha : float,
 	X : region(ispace(int1d), float),
 	Y : region(ispace(int1d), float),
 	AP : region(ispace(int1d), float))
@@ -2292,19 +2556,19 @@ where
 	reads writes(AP)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
-	return sspr2_terra(uplo, n, ALPHA, rectX, rectY, rectAP, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(AP)[0], __fields(AP)[0])
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
+	return sspr2_terra(uplo, n, alpha, rectX, rectY, rectAP, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(AP)[0], __fields(AP)[0])
 end
 
 __demand(__cuda, __leaf)
 task dspr2(
 	uplo : int,
 	n : int,
-	ALPHA : double,
+	alpha : double,
 	X : region(ispace(int1d), double),
 	Y : region(ispace(int1d), double),
 	AP : region(ispace(int1d), double))
@@ -2314,22 +2578,22 @@ where
 	reads writes(AP)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
-	return dspr2_terra(uplo, n, ALPHA, rectX, rectY, rectAP, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(AP)[0], __fields(AP)[0])
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
+	return dspr2_terra(uplo, n, alpha, rectX, rectY, rectAP, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(AP)[0], __fields(AP)[0])
 end
 
 __demand(__cuda, __leaf)
 task sgemm(
 	transa : int,
 	transb : int,
-	ALPHA : float,
+	alpha : float,
 	A : region(ispace(int2d), float),
 	B : region(ispace(int2d), float),
-	BETA : float,
+	beta : float,
 	C : region(ispace(int2d), float))
 where
 	reads(A),
@@ -2363,17 +2627,17 @@ do
 		k = sizeA.y
 	end
 
-	return sgemm_terra(transa, transb, m, n, k, ALPHA, rectA, rectB, BETA, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
+	return sgemm_terra(transa, transb, m, n, k, alpha, rectA, rectB, beta, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
 end
 
 __demand(__cuda, __leaf)
 task dgemm(
 	transa : int,
 	transb : int,
-	ALPHA : double,
+	alpha : double,
 	A : region(ispace(int2d), double),
 	B : region(ispace(int2d), double),
-	BETA : double,
+	beta : double,
 	C : region(ispace(int2d), double))
 where
 	reads(A),
@@ -2407,16 +2671,16 @@ do
 		k = sizeA.y
 	end
 
-	return dgemm_terra(transa, transb, m, n, k, ALPHA, rectA, rectB, BETA, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
+	return dgemm_terra(transa, transb, m, n, k, alpha, rectA, rectB, beta, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
 end
 
 __demand(__cuda, __leaf)
 task ssyrk(
 	uplo : int,
 	trans : int,
-	ALPHA : float,
+	alpha : float,
 	A : region(ispace(int2d), float),
-	BETA : float,
+	beta : float,
 	C : region(ispace(int2d), float))
 where
 	reads(A),
@@ -2440,16 +2704,16 @@ do
 		k = sizeA.y
 	end
 
-	return ssyrk_terra(uplo, trans, n, k, ALPHA, rectA, BETA, rectC, __physical(A)[0], __fields(A)[0], __physical(C)[0], __fields(C)[0])
+	return ssyrk_terra(uplo, trans, n, k, alpha, rectA, beta, rectC, __physical(A)[0], __fields(A)[0], __physical(C)[0], __fields(C)[0])
 end
 
 __demand(__cuda, __leaf)
 task dsyrk(
 	uplo : int,
 	trans : int,
-	ALPHA : double,
+	alpha : double,
 	A : region(ispace(int2d), double),
-	BETA : double,
+	beta : double,
 	C : region(ispace(int2d), double))
 where
 	reads(A),
@@ -2473,17 +2737,17 @@ do
 		k = sizeA.y
 	end
 
-	return dsyrk_terra(uplo, trans, n, k, ALPHA, rectA, BETA, rectC, __physical(A)[0], __fields(A)[0], __physical(C)[0], __fields(C)[0])
+	return dsyrk_terra(uplo, trans, n, k, alpha, rectA, beta, rectC, __physical(A)[0], __fields(A)[0], __physical(C)[0], __fields(C)[0])
 end
 
 __demand(__cuda, __leaf)
 task ssyr2k(
 	uplo : int,
 	trans : int,
-	ALPHA : float,
+	alpha : float,
 	A : region(ispace(int2d), float),
 	B : region(ispace(int2d), float),
-	BETA : float,
+	beta : float,
 	C : region(ispace(int2d), float))
 where
 	reads(A),
@@ -2510,17 +2774,17 @@ do
 		k = sizeA.y
 	end
 
-	return ssyr2k_terra(uplo, trans, n, k, ALPHA, rectA, rectB, BETA, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
+	return ssyr2k_terra(uplo, trans, n, k, alpha, rectA, rectB, beta, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
 end
 
 __demand(__cuda, __leaf)
 task dsyr2k(
 	uplo : int,
 	trans : int,
-	ALPHA : double,
+	alpha : double,
 	A : region(ispace(int2d), double),
 	B : region(ispace(int2d), double),
-	BETA : double,
+	beta : double,
 	C : region(ispace(int2d), double))
 where
 	reads(A),
@@ -2547,17 +2811,17 @@ do
 		k = sizeA.y
 	end
 
-	return dsyr2k_terra(uplo, trans, n, k, ALPHA, rectA, rectB, BETA, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
+	return dsyr2k_terra(uplo, trans, n, k, alpha, rectA, rectB, beta, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
 end
 
 __demand(__cuda, __leaf)
 task ssymm(
 	side : int,
 	uplo : int,
-	ALPHA : float,
+	alpha : float,
 	A : region(ispace(int2d), float),
 	B : region(ispace(int2d), float),
-	BETA : float,
+	beta : float,
 	C : region(ispace(int2d), float))
 where
 	reads(A),
@@ -2584,17 +2848,17 @@ do
 		n = sizeB.y
 	end
 
-	return ssymm_terra(side, uplo, m, n, ALPHA, rectA, rectB, BETA, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
+	return ssymm_terra(side, uplo, m, n, alpha, rectA, rectB, beta, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
 end
 
 __demand(__cuda, __leaf)
 task dsymm(
 	side : int,
 	uplo : int,
-	ALPHA : double,
+	alpha : double,
 	A : region(ispace(int2d), double),
 	B : region(ispace(int2d), double),
-	BETA : double,
+	beta : double,
 	C : region(ispace(int2d), double))
 where
 	reads(A),
@@ -2621,7 +2885,7 @@ do
 		n = sizeB.y
 	end
 
-	return dsymm_terra(side, uplo, m, n, ALPHA, rectA, rectB, BETA, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
+	return dsymm_terra(side, uplo, m, n, alpha, rectA, rectB, beta, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
 end
 
 __demand(__cuda, __leaf)
@@ -2630,7 +2894,7 @@ task strsm(
 	uplo : int,
 	trans : int,
 	diag : int,
-	ALPHA : float,
+	alpha : float,
 	A : region(ispace(int2d), float),
 	B : region(ispace(int2d), float))
 where
@@ -2643,7 +2907,7 @@ do
 	var sizeB = rectB.hi - rectB.lo + {1, 1}
 	var m = sizeB.x
 	var n = sizeB.y
-	return strsm_terra(side, uplo, trans, diag, m, n, ALPHA, rectA, rectB, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0])
+	return strsm_terra(side, uplo, trans, diag, m, n, alpha, rectA, rectB, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0])
 end
 
 __demand(__cuda, __leaf)
@@ -2652,7 +2916,7 @@ task dtrsm(
 	uplo : int,
 	trans : int,
 	diag : int,
-	ALPHA : double,
+	alpha : double,
 	A : region(ispace(int2d), double),
 	B : region(ispace(int2d), double))
 where
@@ -2665,7 +2929,7 @@ do
 	var sizeB = rectB.hi - rectB.lo + {1, 1}
 	var m = sizeB.x
 	var n = sizeB.y
-	return dtrsm_terra(side, uplo, trans, diag, m, n, ALPHA, rectA, rectB, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0])
+	return dtrsm_terra(side, uplo, trans, diag, m, n, alpha, rectA, rectB, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0])
 end
 
 __demand(__cuda, __leaf)
@@ -2674,7 +2938,7 @@ task strmm(
 	uplo : int,
 	trans : int,
 	diag : int,
-	ALPHA : float,
+	alpha : float,
 	A : region(ispace(int2d), float),
 	B : region(ispace(int2d), float),
 	C : region(ispace(int2d), float))
@@ -2697,7 +2961,7 @@ do
 	end
 
 	var n = sizeB.y
-	return strmm_terra(side, uplo, trans, diag, m, n, ALPHA, rectA, rectB, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
+	return strmm_terra(side, uplo, trans, diag, m, n, alpha, rectA, rectB, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
 end
 
 __demand(__cuda, __leaf)
@@ -2706,7 +2970,7 @@ task dtrmm(
 	uplo : int,
 	trans : int,
 	diag : int,
-	ALPHA : double,
+	alpha : double,
 	A : region(ispace(int2d), double),
 	B : region(ispace(int2d), double),
 	C : region(ispace(int2d), double))
@@ -2729,5 +2993,5 @@ do
 	end
 
 	var n = sizeB.y
-	return dtrmm_terra(side, uplo, trans, diag, m, n, ALPHA, rectA, rectB, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
+	return dtrmm_terra(side, uplo, trans, diag, m, n, alpha, rectA, rectB, rectC, __physical(A)[0], __fields(A)[0], __physical(B)[0], __fields(B)[0], __physical(C)[0], __fields(C)[0])
 end

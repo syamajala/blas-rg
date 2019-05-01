@@ -249,6 +249,138 @@ terra daxpy_terra(
 	cblas.cblas_daxpy(N, alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
+terra srotg_terra(
+	a : float,
+	b : float,
+	c : float,
+	s : float)
+
+	cblas.cblas_srotg(&a, &b, &c, &s)
+end
+
+terra srotmg_terra(
+	d1 : float,
+	d2 : float,
+	rectB1 : rect1d,
+	b2 : float,
+	rectP : rect1d,
+	prB1 : c.legion_physical_region_t,
+	fldB1 : c.legion_field_id_t,
+	prP : c.legion_physical_region_t,
+	fldP : c.legion_field_id_t)
+
+	var rawB1 : float_ptr
+	[get_raw_ptr_factory(1, float, rectB1, prB1, fldB1, rawB1, float_ptr)]
+	var rawP : float_ptr
+	[get_raw_ptr_factory(1, float, rectP, prP, fldP, rawP, float_ptr)]
+	cblas.cblas_srotmg(&d1, &d2, rawB1.ptr, b2, rawP.ptr)
+end
+
+terra srot_terra(
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	c : float,
+	s : float,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t)
+
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	cblas.cblas_srot(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, c, s)
+end
+
+terra srotm_terra(
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	rectP : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t,
+	prP : c.legion_physical_region_t,
+	fldP : c.legion_field_id_t)
+
+	var rawX : float_ptr
+	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var rawY : float_ptr
+	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var rawP : float_ptr
+	[get_raw_ptr_factory(1, float, rectP, prP, fldP, rawP, float_ptr)]
+	cblas.cblas_srotm(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawP.ptr)
+end
+
+terra drotg_terra(
+	a : double,
+	b : double,
+	c : double,
+	s : double)
+
+	cblas.cblas_drotg(&a, &b, &c, &s)
+end
+
+terra drotmg_terra(
+	d1 : double,
+	d2 : double,
+	rectB1 : rect1d,
+	b2 : double,
+	rectP : rect1d,
+	prB1 : c.legion_physical_region_t,
+	fldB1 : c.legion_field_id_t,
+	prP : c.legion_physical_region_t,
+	fldP : c.legion_field_id_t)
+
+	var rawB1 : double_ptr
+	[get_raw_ptr_factory(1, double, rectB1, prB1, fldB1, rawB1, double_ptr)]
+	var rawP : double_ptr
+	[get_raw_ptr_factory(1, double, rectP, prP, fldP, rawP, double_ptr)]
+	cblas.cblas_drotmg(&d1, &d2, rawB1.ptr, b2, rawP.ptr)
+end
+
+terra drot_terra(
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	c : double,
+	s : double,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t)
+
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	cblas.cblas_drot(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, c, s)
+end
+
+terra drotm_terra(
+	N : int,
+	rectX : rect1d,
+	rectY : rect1d,
+	rectP : rect1d,
+	prX : c.legion_physical_region_t,
+	fldX : c.legion_field_id_t,
+	prY : c.legion_physical_region_t,
+	fldY : c.legion_field_id_t,
+	prP : c.legion_physical_region_t,
+	fldP : c.legion_field_id_t)
+
+	var rawX : double_ptr
+	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var rawY : double_ptr
+	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var rawP : double_ptr
+	[get_raw_ptr_factory(1, double, rectP, prP, fldP, rawP, double_ptr)]
+	cblas.cblas_drotm(N, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawP.ptr)
+end
+
 terra sscal_terra(
 	N : int,
 	alpha : float,
@@ -1263,9 +1395,9 @@ where
 	reads(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var N = (sizeX-0)/1
 	return sdot_terra(N, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -1279,9 +1411,9 @@ where
 	reads(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var N = (sizeX-0)/1
 	return ddot_terra(N, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -1293,7 +1425,7 @@ where
 	reads(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = (sizeX-0)/1
 	return snrm2_terra(N, rectX, __physical(X)[0], __fields(X)[0])
 end
@@ -1305,7 +1437,7 @@ where
 	reads(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = (sizeX-0)/1
 	return sasum_terra(N, rectX, __physical(X)[0], __fields(X)[0])
 end
@@ -1317,7 +1449,7 @@ where
 	reads(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = (sizeX-0)/1
 	return dnrm2_terra(N, rectX, __physical(X)[0], __fields(X)[0])
 end
@@ -1329,7 +1461,7 @@ where
 	reads(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = (sizeX-0)/1
 	return dasum_terra(N, rectX, __physical(X)[0], __fields(X)[0])
 end
@@ -1341,7 +1473,7 @@ where
 	reads(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = (sizeX-0)/1
 	return isamax_terra(N, rectX, __physical(X)[0], __fields(X)[0])
 end
@@ -1353,7 +1485,7 @@ where
 	reads(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = (sizeX-0)/1
 	return idamax_terra(N, rectX, __physical(X)[0], __fields(X)[0])
 end
@@ -1367,9 +1499,9 @@ where
 	reads writes(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var N = (sizeX-0)/1
 	sswap_terra(N, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -1383,9 +1515,9 @@ where
 	reads writes(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var N = (sizeX-0)/1
 	scopy_terra(N, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -1400,9 +1532,9 @@ where
 	reads writes(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var N = (sizeX-0)/1
 	saxpy_terra(N, alpha, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -1416,9 +1548,9 @@ where
 	reads writes(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var N = (sizeX-0)/1
 	dswap_terra(N, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -1432,9 +1564,9 @@ where
 	reads writes(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var N = (sizeX-0)/1
 	dcopy_terra(N, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -1449,11 +1581,141 @@ where
 	reads writes(Y)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var N = (sizeX-0)/1
 	daxpy_terra(N, alpha, rectX, rectY, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+end
+
+__demand(__leaf)
+task srotg(
+	a : float,
+	b : float,
+	c : float,
+	s : float)
+	srotg_terra(a, b, c, s)
+end
+
+__demand(__leaf)
+task srotmg(
+	d1 : float,
+	d2 : float,
+	B1 : region(ispace(int1d), float),
+	b2 : float,
+	P : region(ispace(int1d), float))
+where
+	reads writes(B1),
+	reads writes(P)
+do
+	var rectB1 = B1.bounds
+	var sizeB1 = rectB1.hi - rectB1.lo + {1}
+	var rectP = P.bounds
+	var sizeP = rectP.hi - rectP.lo + {1}
+	srotmg_terra(d1, d2, rectB1, b2, rectP, __physical(B1)[0], __fields(B1)[0], __physical(P)[0], __fields(P)[0])
+end
+
+__demand(__leaf)
+task srot(
+	X : region(ispace(int1d), float),
+	Y : region(ispace(int1d), float),
+	c : float,
+	s : float)
+where
+	reads writes(X),
+	reads writes(Y)
+do
+	var rectX = X.bounds
+	var sizeX = rectX.hi - rectX.lo + {1}
+	var rectY = Y.bounds
+	var sizeY = rectY.hi - rectY.lo + {1}
+	var N = (sizeX-1-0)/1+1
+	srot_terra(N, rectX, rectY, c, s, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+end
+
+__demand(__leaf)
+task srotm(
+	X : region(ispace(int1d), float),
+	Y : region(ispace(int1d), float),
+	P : region(ispace(int1d), float))
+where
+	reads writes(X),
+	reads writes(Y),
+	reads writes(P)
+do
+	var rectX = X.bounds
+	var sizeX = rectX.hi - rectX.lo + {1}
+	var rectY = Y.bounds
+	var sizeY = rectY.hi - rectY.lo + {1}
+	var rectP = P.bounds
+	var sizeP = rectP.hi - rectP.lo + {1}
+	var N = (sizeX-0)/1
+	srotm_terra(N, rectX, rectY, rectP, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(P)[0], __fields(P)[0])
+end
+
+__demand(__leaf)
+task drotg(
+	a : double,
+	b : double,
+	c : double,
+	s : double)
+	drotg_terra(a, b, c, s)
+end
+
+__demand(__leaf)
+task drotmg(
+	d1 : double,
+	d2 : double,
+	B1 : region(ispace(int1d), double),
+	b2 : double,
+	P : region(ispace(int1d), double))
+where
+	reads writes(B1),
+	reads writes(P)
+do
+	var rectB1 = B1.bounds
+	var sizeB1 = rectB1.hi - rectB1.lo + {1}
+	var rectP = P.bounds
+	var sizeP = rectP.hi - rectP.lo + {1}
+	drotmg_terra(d1, d2, rectB1, b2, rectP, __physical(B1)[0], __fields(B1)[0], __physical(P)[0], __fields(P)[0])
+end
+
+__demand(__leaf)
+task drot(
+	X : region(ispace(int1d), double),
+	Y : region(ispace(int1d), double),
+	c : double,
+	s : double)
+where
+	reads writes(X),
+	reads writes(Y)
+do
+	var rectX = X.bounds
+	var sizeX = rectX.hi - rectX.lo + {1}
+	var rectY = Y.bounds
+	var sizeY = rectY.hi - rectY.lo + {1}
+	var N = (sizeX-1-0)/1+1
+	drot_terra(N, rectX, rectY, c, s, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
+end
+
+__demand(__leaf)
+task drotm(
+	X : region(ispace(int1d), double),
+	Y : region(ispace(int1d), double),
+	P : region(ispace(int1d), double))
+where
+	reads writes(X),
+	reads writes(Y),
+	reads writes(P)
+do
+	var rectX = X.bounds
+	var sizeX = rectX.hi - rectX.lo + {1}
+	var rectY = Y.bounds
+	var sizeY = rectY.hi - rectY.lo + {1}
+	var rectP = P.bounds
+	var sizeP = rectP.hi - rectP.lo + {1}
+	var N = (sizeX-0)/1
+	drotm_terra(N, rectX, rectY, rectP, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(P)[0], __fields(P)[0])
 end
 
 __demand(__leaf)
@@ -1464,7 +1726,7 @@ where
 	reads writes(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = (sizeX-0)/1
 	sscal_terra(N, alpha, rectX, __physical(X)[0], __fields(X)[0])
 end
@@ -1477,7 +1739,7 @@ where
 	reads writes(X)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = (sizeX-0)/1
 	dscal_terra(N, alpha, rectX, __physical(X)[0], __fields(X)[0])
 end
@@ -1498,9 +1760,9 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var M = sizeA.x
 	var N = sizeA.y
 	sgemv_terra(TransA, M, N, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
@@ -1526,9 +1788,9 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	sgbmv_terra(TransA, M, N, KL, KU, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
@@ -1546,7 +1808,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = sizeA.x
 	strmv_terra(Uplo, TransA, Diag, N, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1566,7 +1828,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = sizeA.y
 	stbmv_terra(Uplo, TransA, Diag, N, K, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1584,9 +1846,9 @@ where
 	reads writes(X)
 do
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	stpmv_terra(Uplo, TransA, Diag, N, rectAP, rectX, __physical(AP)[0], __fields(AP)[0], __physical(X)[0], __fields(X)[0])
 end
 
@@ -1604,7 +1866,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = sizeA.x
 	strsv_terra(Uplo, TransA, Diag, N, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1624,7 +1886,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = sizeA.y
 	stbsv_terra(Uplo, TransA, Diag, N, K, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1642,9 +1904,9 @@ where
 	reads writes(X)
 do
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	stpsv_terra(Uplo, TransA, Diag, N, rectAP, rectX, __physical(AP)[0], __fields(AP)[0], __physical(X)[0], __fields(X)[0])
 end
 
@@ -1664,9 +1926,9 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var M = sizeA.x
 	var N = sizeA.y
 	dgemv_terra(TransA, M, N, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
@@ -1692,9 +1954,9 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	dgbmv_terra(TransA, M, N, KL, KU, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
@@ -1712,7 +1974,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = sizeA.x
 	dtrmv_terra(Uplo, TransA, Diag, N, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1732,7 +1994,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = sizeA.y
 	dtbmv_terra(Uplo, TransA, Diag, N, K, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1750,9 +2012,9 @@ where
 	reads writes(X)
 do
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	dtpmv_terra(Uplo, TransA, Diag, N, rectAP, rectX, __physical(AP)[0], __fields(AP)[0], __physical(X)[0], __fields(X)[0])
 end
 
@@ -1770,7 +2032,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = sizeA.x
 	dtrsv_terra(Uplo, TransA, Diag, N, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1790,7 +2052,7 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var N = sizeA.y
 	dtbsv_terra(Uplo, TransA, Diag, N, K, rectA, rectX, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0])
 end
@@ -1808,9 +2070,9 @@ where
 	reads writes(X)
 do
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	dtpsv_terra(Uplo, TransA, Diag, N, rectAP, rectX, __physical(AP)[0], __fields(AP)[0], __physical(X)[0], __fields(X)[0])
 end
 
@@ -1830,9 +2092,9 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var N = sizeA.x
 	ssymv_terra(Uplo, N, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -1854,9 +2116,9 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var N = sizeA.y
 	ssbmv_terra(Uplo, N, K, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -1876,11 +2138,11 @@ where
 	reads writes(Y)
 do
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	sspmv_terra(Uplo, N, alpha, rectAP, rectX, beta, rectY, __physical(AP)[0], __fields(AP)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
@@ -1896,9 +2158,9 @@ where
 	reads writes(A)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var M = sizeX
@@ -1917,7 +2179,7 @@ where
 	reads writes(A)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var N = (sizeX-1-0)/1+1
@@ -1936,9 +2198,9 @@ where
 	reads writes(AP)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
 	sspr_terra(Uplo, N, alpha, rectX, rectAP, __physical(X)[0], __fields(X)[0], __physical(AP)[0], __fields(AP)[0])
 end
 
@@ -1955,9 +2217,9 @@ where
 	reads writes(A)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var N = 0
@@ -1984,9 +2246,9 @@ where
 	reads writes(A)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	sspr2_terra(Uplo, N, alpha, rectX, rectY, rectA, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(A)[0], __fields(A)[0])
@@ -2008,9 +2270,9 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var N = sizeA.x
 	dsymv_terra(Uplo, N, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -2032,9 +2294,9 @@ do
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var N = sizeA.y
 	dsbmv_terra(Uplo, N, K, alpha, rectA, rectX, beta, rectY, __physical(A)[0], __fields(A)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
@@ -2054,11 +2316,11 @@ where
 	reads writes(Y)
 do
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	dspmv_terra(Uplo, N, alpha, rectAP, rectX, beta, rectY, __physical(AP)[0], __fields(AP)[0], __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0])
 end
 
@@ -2074,9 +2336,9 @@ where
 	reads writes(A)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var M = sizeX
@@ -2095,7 +2357,7 @@ where
 	reads writes(A)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var N = (sizeX-1-0)/1+1
@@ -2114,9 +2376,9 @@ where
 	reads writes(AP)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectAP = AP.bounds
-	var sizeAP = rectAP.hi - rectAP.lo + {1, 1}
+	var sizeAP = rectAP.hi - rectAP.lo + {1}
 	dspr_terra(Uplo, N, alpha, rectX, rectAP, __physical(X)[0], __fields(X)[0], __physical(AP)[0], __fields(AP)[0])
 end
 
@@ -2133,9 +2395,9 @@ where
 	reads writes(A)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	var N = 0
@@ -2162,9 +2424,9 @@ where
 	reads writes(A)
 do
 	var rectX = X.bounds
-	var sizeX = rectX.hi - rectX.lo + {1, 1}
+	var sizeX = rectX.hi - rectX.lo + {1}
 	var rectY = Y.bounds
-	var sizeY = rectY.hi - rectY.lo + {1, 1}
+	var sizeY = rectY.hi - rectY.lo + {1}
 	var rectA = A.bounds
 	var sizeA = rectA.hi - rectA.lo + {1, 1}
 	dspr2_terra(Uplo, N, alpha, rectX, rectY, rectA, __physical(X)[0], __fields(X)[0], __physical(Y)[0], __fields(Y)[0], __physical(A)[0], __fields(A)[0])
