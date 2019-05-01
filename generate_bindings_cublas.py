@@ -221,6 +221,11 @@ class Func():
 
         terra_args = list(map(lambda a: "\n\t"+a, self.terra_args))
         terra_args = ",".join(terra_args)
+
+        body.append("""var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)""")
+
         body.append(cblas_call % (self.name.capitalize(), cblas_args))
         body = list(map(lambda b: "\t"+b, body))
         body = "\n".join(body)

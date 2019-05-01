@@ -16,8 +16,10 @@ import "regent"
 local c = regentlib.c
 
 
-terralib.includepath = terralib.includepath .. ";/opt/cuda/include/"
-terralib.linklibrary("/opt/cuda/lib64/libcublas.so")
+local cuda_home = os.getenv("CUDA_HOME")
+terralib.includepath = terralib.includepath .. ";" .. cuda_home .. "/include"
+
+terralib.linklibrary(cuda_home .. "/lib64/libcublas.so")
 terralib.linklibrary("./libcontext_manager.so")
 
 local cuda_runtime = terralib.includec("cuda_runtime.h")
@@ -70,6 +72,9 @@ terra snrm2_terra(
 	mgr.create_handle(&handle)
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSnrm2_v2(handle, n, rawX.ptr, rawX.offset, &result)
 end
 
@@ -84,6 +89,9 @@ terra dnrm2_terra(
 	mgr.create_handle(&handle)
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDnrm2_v2(handle, n, rawX.ptr, rawX.offset, &result)
 end
 
@@ -103,6 +111,9 @@ terra sdot_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSdot_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, &result)
 end
 
@@ -122,6 +133,9 @@ terra ddot_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDdot_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, &result)
 end
 
@@ -136,6 +150,9 @@ terra sscal_terra(
 	mgr.create_handle(&handle)
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSscal_v2(handle, n, &alpha, rawX.ptr, rawX.offset)
 end
 
@@ -150,6 +167,9 @@ terra dscal_terra(
 	mgr.create_handle(&handle)
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDscal_v2(handle, n, &alpha, rawX.ptr, rawX.offset)
 end
 
@@ -169,6 +189,9 @@ terra saxpy_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSaxpy_v2(handle, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
@@ -188,6 +211,9 @@ terra daxpy_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDaxpy_v2(handle, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
@@ -206,6 +232,9 @@ terra scopy_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasScopy_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
@@ -224,6 +253,9 @@ terra dcopy_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDcopy_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
@@ -242,6 +274,9 @@ terra sswap_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSswap_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
@@ -260,6 +295,9 @@ terra dswap_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDswap_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset)
 end
 
@@ -274,6 +312,9 @@ terra isamax_terra(
 	mgr.create_handle(&handle)
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasIsamax_v2(handle, n, rawX.ptr, rawX.offset, &result)
 end
 
@@ -288,6 +329,9 @@ terra idamax_terra(
 	mgr.create_handle(&handle)
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasIdamax_v2(handle, n, rawX.ptr, rawX.offset, &result)
 end
 
@@ -302,6 +346,9 @@ terra sasum_terra(
 	mgr.create_handle(&handle)
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSasum_v2(handle, n, rawX.ptr, rawX.offset, &result)
 end
 
@@ -316,6 +363,9 @@ terra dasum_terra(
 	mgr.create_handle(&handle)
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDasum_v2(handle, n, rawX.ptr, rawX.offset, &result)
 end
 
@@ -336,6 +386,9 @@ terra srot_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSrot_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, &c, &s)
 end
 
@@ -356,6 +409,9 @@ terra drot_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDrot_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, &c, &s)
 end
 
@@ -367,6 +423,9 @@ terra srotg_terra(
 
 	var handle : cublas.cublasHandle_t
 	mgr.create_handle(&handle)
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSrotg_v2(handle, &a, &b, &c, &s)
 end
 
@@ -378,6 +437,9 @@ terra drotg_terra(
 
 	var handle : cublas.cublasHandle_t
 	mgr.create_handle(&handle)
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDrotg_v2(handle, &a, &b, &c, &s)
 end
 
@@ -401,6 +463,9 @@ terra srotm_terra(
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
 	var rawPARAM : float_ptr
 	[get_raw_ptr_factory(1, float, rectPARAM, prPARAM, fldPARAM, rawPARAM, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSrotm_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawPARAM.ptr)
 end
 
@@ -424,6 +489,9 @@ terra drotm_terra(
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
 	var rawPARAM : double_ptr
 	[get_raw_ptr_factory(1, double, rectPARAM, prPARAM, fldPARAM, rawPARAM, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDrotm_v2(handle, n, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawPARAM.ptr)
 end
 
@@ -440,6 +508,9 @@ terra srotmg_terra(
 	mgr.create_handle(&handle)
 	var rawPARAM : float_ptr
 	[get_raw_ptr_factory(1, float, rectPARAM, prPARAM, fldPARAM, rawPARAM, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSrotmg_v2(handle, &d1, &d2, &x1, &y1, rawPARAM.ptr)
 end
 
@@ -456,6 +527,9 @@ terra drotmg_terra(
 	mgr.create_handle(&handle)
 	var rawPARAM : double_ptr
 	[get_raw_ptr_factory(1, double, rectPARAM, prPARAM, fldPARAM, rawPARAM, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDrotmg_v2(handle, &d1, &d2, &x1, &y1, rawPARAM.ptr)
 end
 
@@ -483,6 +557,9 @@ terra sgemv_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSgemv_v2(handle, trans, m, n, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
@@ -510,6 +587,9 @@ terra dgemv_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDgemv_v2(handle, trans, m, n, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
@@ -539,6 +619,9 @@ terra sgbmv_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSgbmv_v2(handle, trans, m, n, kl, ku, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
@@ -568,6 +651,9 @@ terra dgbmv_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDgbmv_v2(handle, trans, m, n, kl, ku, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
@@ -589,6 +675,9 @@ terra strmv_terra(
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasStrmv_v2(handle, uplo, trans, diag, n, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
@@ -610,6 +699,9 @@ terra dtrmv_terra(
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDtrmv_v2(handle, uplo, trans, diag, n, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
@@ -632,6 +724,9 @@ terra stbmv_terra(
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasStbmv_v2(handle, uplo, trans, diag, n, k, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
@@ -654,6 +749,9 @@ terra dtbmv_terra(
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDtbmv_v2(handle, uplo, trans, diag, n, k, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
@@ -675,6 +773,9 @@ terra stpmv_terra(
 	[get_raw_ptr_factory(1, float, rectAP, prAP, fldAP, rawAP, float_ptr)]
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasStpmv_v2(handle, uplo, trans, diag, n, rawAP.ptr, rawX.ptr, rawX.offset)
 end
 
@@ -696,6 +797,9 @@ terra dtpmv_terra(
 	[get_raw_ptr_factory(1, double, rectAP, prAP, fldAP, rawAP, double_ptr)]
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDtpmv_v2(handle, uplo, trans, diag, n, rawAP.ptr, rawX.ptr, rawX.offset)
 end
 
@@ -717,6 +821,9 @@ terra strsv_terra(
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasStrsv_v2(handle, uplo, trans, diag, n, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
@@ -738,6 +845,9 @@ terra dtrsv_terra(
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDtrsv_v2(handle, uplo, trans, diag, n, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
@@ -759,6 +869,9 @@ terra stpsv_terra(
 	[get_raw_ptr_factory(1, float, rectAP, prAP, fldAP, rawAP, float_ptr)]
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasStpsv_v2(handle, uplo, trans, diag, n, rawAP.ptr, rawX.ptr, rawX.offset)
 end
 
@@ -780,6 +893,9 @@ terra dtpsv_terra(
 	[get_raw_ptr_factory(1, double, rectAP, prAP, fldAP, rawAP, double_ptr)]
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDtpsv_v2(handle, uplo, trans, diag, n, rawAP.ptr, rawX.ptr, rawX.offset)
 end
 
@@ -802,6 +918,9 @@ terra stbsv_terra(
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasStbsv_v2(handle, uplo, trans, diag, n, k, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
@@ -824,6 +943,9 @@ terra dtbsv_terra(
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDtbsv_v2(handle, uplo, trans, diag, n, k, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset)
 end
 
@@ -850,6 +972,9 @@ terra ssymv_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSsymv_v2(handle, uplo, n, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
@@ -876,6 +1001,9 @@ terra dsymv_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDsymv_v2(handle, uplo, n, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
@@ -903,6 +1031,9 @@ terra ssbmv_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSsbmv_v2(handle, uplo, n, k, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
@@ -930,6 +1061,9 @@ terra dsbmv_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDsbmv_v2(handle, uplo, n, k, &alpha, rawA.ptr, rawA.offset, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
@@ -956,6 +1090,9 @@ terra sspmv_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSspmv_v2(handle, uplo, n, &alpha, rawAP.ptr, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
@@ -982,6 +1119,9 @@ terra dspmv_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDspmv_v2(handle, uplo, n, &alpha, rawAP.ptr, rawX.ptr, rawX.offset, &beta, rawY.ptr, rawY.offset)
 end
 
@@ -1007,6 +1147,9 @@ terra sger_terra(
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSger_v2(handle, m, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
 end
 
@@ -1032,6 +1175,9 @@ terra dger_terra(
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDger_v2(handle, m, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
 end
 
@@ -1052,6 +1198,9 @@ terra ssyr_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSsyr_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawA.ptr, rawA.offset)
 end
 
@@ -1072,6 +1221,9 @@ terra dsyr_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDsyr_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawA.ptr, rawA.offset)
 end
 
@@ -1092,6 +1244,9 @@ terra sspr_terra(
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawAP : float_ptr
 	[get_raw_ptr_factory(1, float, rectAP, prAP, fldAP, rawAP, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSspr_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawAP.ptr)
 end
 
@@ -1112,6 +1267,9 @@ terra dspr_terra(
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawAP : double_ptr
 	[get_raw_ptr_factory(1, double, rectAP, prAP, fldAP, rawAP, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDspr_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawAP.ptr)
 end
 
@@ -1137,6 +1295,9 @@ terra ssyr2_terra(
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSsyr2_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
 end
 
@@ -1162,6 +1323,9 @@ terra dsyr2_terra(
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDsyr2_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawA.ptr, rawA.offset)
 end
 
@@ -1187,6 +1351,9 @@ terra sspr2_terra(
 	[get_raw_ptr_factory(1, float, rectY, prY, fldY, rawY, float_ptr)]
 	var rawAP : float_ptr
 	[get_raw_ptr_factory(1, float, rectAP, prAP, fldAP, rawAP, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSspr2_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawAP.ptr)
 end
 
@@ -1212,6 +1379,9 @@ terra dspr2_terra(
 	[get_raw_ptr_factory(1, double, rectY, prY, fldY, rawY, double_ptr)]
 	var rawAP : double_ptr
 	[get_raw_ptr_factory(1, double, rectAP, prAP, fldAP, rawAP, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDspr2_v2(handle, uplo, n, &alpha, rawX.ptr, rawX.offset, rawY.ptr, rawY.offset, rawAP.ptr)
 end
 
@@ -1241,6 +1411,9 @@ terra sgemm_terra(
 	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
 	var rawC : float_ptr
 	[get_raw_ptr_factory(2, float, rectC, prC, fldC, rawC, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSgemm_v2(handle, transa, transb, m, n, k, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &beta, rawC.ptr, rawC.offset)
 end
 
@@ -1270,6 +1443,9 @@ terra dgemm_terra(
 	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
 	var rawC : double_ptr
 	[get_raw_ptr_factory(2, double, rectC, prC, fldC, rawC, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDgemm_v2(handle, transa, transb, m, n, k, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &beta, rawC.ptr, rawC.offset)
 end
 
@@ -1293,6 +1469,9 @@ terra ssyrk_terra(
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawC : float_ptr
 	[get_raw_ptr_factory(2, float, rectC, prC, fldC, rawC, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSsyrk_v2(handle, uplo, trans, n, k, &alpha, rawA.ptr, rawA.offset, &beta, rawC.ptr, rawC.offset)
 end
 
@@ -1316,6 +1495,9 @@ terra dsyrk_terra(
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawC : double_ptr
 	[get_raw_ptr_factory(2, double, rectC, prC, fldC, rawC, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDsyrk_v2(handle, uplo, trans, n, k, &alpha, rawA.ptr, rawA.offset, &beta, rawC.ptr, rawC.offset)
 end
 
@@ -1344,6 +1526,9 @@ terra ssyr2k_terra(
 	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
 	var rawC : float_ptr
 	[get_raw_ptr_factory(2, float, rectC, prC, fldC, rawC, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSsyr2k_v2(handle, uplo, trans, n, k, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &beta, rawC.ptr, rawC.offset)
 end
 
@@ -1372,6 +1557,9 @@ terra dsyr2k_terra(
 	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
 	var rawC : double_ptr
 	[get_raw_ptr_factory(2, double, rectC, prC, fldC, rawC, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDsyr2k_v2(handle, uplo, trans, n, k, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &beta, rawC.ptr, rawC.offset)
 end
 
@@ -1400,6 +1588,9 @@ terra ssymm_terra(
 	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
 	var rawC : float_ptr
 	[get_raw_ptr_factory(2, float, rectC, prC, fldC, rawC, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasSsymm_v2(handle, side, uplo, m, n, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &beta, rawC.ptr, rawC.offset)
 end
 
@@ -1428,6 +1619,9 @@ terra dsymm_terra(
 	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
 	var rawC : double_ptr
 	[get_raw_ptr_factory(2, double, rectC, prC, fldC, rawC, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDsymm_v2(handle, side, uplo, m, n, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, &beta, rawC.ptr, rawC.offset)
 end
 
@@ -1452,6 +1646,9 @@ terra strsm_terra(
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawB : float_ptr
 	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasStrsm_v2(handle, side, uplo, trans, diag, m, n, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
 end
 
@@ -1476,6 +1673,9 @@ terra dtrsm_terra(
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawB : double_ptr
 	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDtrsm_v2(handle, side, uplo, trans, diag, m, n, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
 end
 
@@ -1505,6 +1705,9 @@ terra strmm_terra(
 	[get_raw_ptr_factory(2, float, rectB, prB, fldB, rawB, float_ptr)]
 	var rawC : float_ptr
 	[get_raw_ptr_factory(2, float, rectC, prC, fldC, rawC, float_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasStrmm_v2(handle, side, uplo, trans, diag, m, n, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, rawC.ptr, rawC.offset)
 end
 
@@ -1534,6 +1737,9 @@ terra dtrmm_terra(
 	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
 	var rawC : double_ptr
 	[get_raw_ptr_factory(2, double, rectC, prC, fldC, rawC, double_ptr)]
+	var stream : cuda_runtime.cudaStream_t
+        cuda_runtime.cudaStreamCreate(&stream)
+        cublas.cublasSetStream_v2(handle, stream)
 	return cublas.cublasDtrmm_v2(handle, side, uplo, trans, diag, m, n, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, rawC.ptr, rawC.offset)
 end
 

@@ -62,8 +62,10 @@ local cblas = terralib.includec("cblas.h")
 blas_header = header % blas
 
 cublas = """
-terralib.includepath = terralib.includepath .. ";/opt/cuda/include/"
-terralib.linklibrary("/opt/cuda/lib64/libcublas.so")
+local cuda_home = os.getenv("CUDA_HOME")
+terralib.includepath = terralib.includepath .. ";" .. cuda_home .. "/include"
+
+terralib.linklibrary(cuda_home .. "/lib64/libcublas.so")
 terralib.linklibrary("./libcontext_manager.so")
 
 local cuda_runtime = terralib.includec("cuda_runtime.h")
