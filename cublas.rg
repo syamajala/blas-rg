@@ -1677,7 +1677,7 @@ end
 
 
 __demand(__cuda, __leaf)
-task snrm2(
+task snrm2_gpu(
 	X : region(ispace(int1d), float),
 	result : float)
 where
@@ -1690,7 +1690,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dnrm2(
+task dnrm2_gpu(
 	X : region(ispace(int1d), double),
 	result : double)
 where
@@ -1703,7 +1703,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task sdot(
+task sdot_gpu(
 	X : region(ispace(int1d), float),
 	Y : region(ispace(int1d), float),
 	result : float)
@@ -1720,7 +1720,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task ddot(
+task ddot_gpu(
 	X : region(ispace(int1d), double),
 	Y : region(ispace(int1d), double),
 	result : double)
@@ -1737,7 +1737,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task sscal(
+task sscal_gpu(
 	alpha : float,
 	X : region(ispace(int1d), float))
 where
@@ -1750,7 +1750,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dscal(
+task dscal_gpu(
 	alpha : double,
 	X : region(ispace(int1d), double))
 where
@@ -1763,7 +1763,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task saxpy(
+task saxpy_gpu(
 	alpha : float,
 	X : region(ispace(int1d), float),
 	Y : region(ispace(int1d), float))
@@ -1780,7 +1780,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task daxpy(
+task daxpy_gpu(
 	alpha : double,
 	X : region(ispace(int1d), double),
 	Y : region(ispace(int1d), double))
@@ -1797,7 +1797,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task scopy(
+task scopy_gpu(
 	X : region(ispace(int1d), float),
 	Y : region(ispace(int1d), float))
 where
@@ -1813,7 +1813,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dcopy(
+task dcopy_gpu(
 	X : region(ispace(int1d), double),
 	Y : region(ispace(int1d), double))
 where
@@ -1829,7 +1829,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task sswap(
+task sswap_gpu(
 	X : region(ispace(int1d), float),
 	Y : region(ispace(int1d), float))
 where
@@ -1845,7 +1845,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dswap(
+task dswap_gpu(
 	X : region(ispace(int1d), double),
 	Y : region(ispace(int1d), double))
 where
@@ -1861,7 +1861,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task isamax(
+task isamax_gpu(
 	X : region(ispace(int1d), float),
 	result : int)
 where
@@ -1874,7 +1874,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task idamax(
+task idamax_gpu(
 	X : region(ispace(int1d), double),
 	result : int)
 where
@@ -1887,7 +1887,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task sasum(
+task sasum_gpu(
 	X : region(ispace(int1d), float),
 	result : float)
 where
@@ -1900,7 +1900,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dasum(
+task dasum_gpu(
 	X : region(ispace(int1d), double),
 	result : double)
 where
@@ -1913,7 +1913,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task srot(
+task srot_gpu(
 	X : region(ispace(int1d), float),
 	Y : region(ispace(int1d), float),
 	c : float,
@@ -1931,7 +1931,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task drot(
+task drot_gpu(
 	X : region(ispace(int1d), double),
 	Y : region(ispace(int1d), double),
 	c : double,
@@ -1949,7 +1949,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task srotg(
+task srotg_gpu(
 	a : float,
 	b : float,
 	c : float,
@@ -1958,7 +1958,7 @@ task srotg(
 end
 
 __demand(__cuda, __leaf)
-task drotg(
+task drotg_gpu(
 	a : double,
 	b : double,
 	c : double,
@@ -1967,7 +1967,7 @@ task drotg(
 end
 
 __demand(__cuda, __leaf)
-task srotm(
+task srotm_gpu(
 	X : region(ispace(int1d), float),
 	Y : region(ispace(int1d), float),
 	PARAM : region(ispace(int1d), float))
@@ -1987,7 +1987,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task drotm(
+task drotm_gpu(
 	X : region(ispace(int1d), double),
 	Y : region(ispace(int1d), double),
 	PARAM : region(ispace(int1d), double))
@@ -2007,7 +2007,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task srotmg(
+task srotmg_gpu(
 	d1 : float,
 	d2 : float,
 	x1 : float,
@@ -2022,7 +2022,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task drotmg(
+task drotmg_gpu(
 	d1 : double,
 	d2 : double,
 	x1 : double,
@@ -2037,7 +2037,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task sgemv(
+task sgemv_gpu(
 	trans : int,
 	alpha : float,
 	A : region(ispace(int2d), float),
@@ -2061,7 +2061,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dgemv(
+task dgemv_gpu(
 	trans : int,
 	alpha : double,
 	A : region(ispace(int2d), double),
@@ -2085,7 +2085,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task sgbmv(
+task sgbmv_gpu(
 	trans : int,
 	m : int,
 	n : int,
@@ -2111,7 +2111,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dgbmv(
+task dgbmv_gpu(
 	trans : int,
 	m : int,
 	n : int,
@@ -2137,7 +2137,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task strmv(
+task strmv_gpu(
 	uplo : int,
 	trans : int,
 	diag : int,
@@ -2156,7 +2156,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dtrmv(
+task dtrmv_gpu(
 	uplo : int,
 	trans : int,
 	diag : int,
@@ -2175,7 +2175,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task stbmv(
+task stbmv_gpu(
 	uplo : int,
 	trans : int,
 	diag : int,
@@ -2195,7 +2195,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dtbmv(
+task dtbmv_gpu(
 	uplo : int,
 	trans : int,
 	diag : int,
@@ -2215,7 +2215,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task stpmv(
+task stpmv_gpu(
 	uplo : int,
 	trans : int,
 	diag : int,
@@ -2234,7 +2234,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dtpmv(
+task dtpmv_gpu(
 	uplo : int,
 	trans : int,
 	diag : int,
@@ -2253,7 +2253,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task strsv(
+task strsv_gpu(
 	uplo : int,
 	trans : int,
 	diag : int,
@@ -2272,7 +2272,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dtrsv(
+task dtrsv_gpu(
 	uplo : int,
 	trans : int,
 	diag : int,
@@ -2291,7 +2291,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task stpsv(
+task stpsv_gpu(
 	uplo : int,
 	trans : int,
 	diag : int,
@@ -2310,7 +2310,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dtpsv(
+task dtpsv_gpu(
 	uplo : int,
 	trans : int,
 	diag : int,
@@ -2329,7 +2329,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task stbsv(
+task stbsv_gpu(
 	uplo : int,
 	trans : int,
 	diag : int,
@@ -2349,7 +2349,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dtbsv(
+task dtbsv_gpu(
 	uplo : int,
 	trans : int,
 	diag : int,
@@ -2369,7 +2369,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task ssymv(
+task ssymv_gpu(
 	uplo : int,
 	alpha : float,
 	A : region(ispace(int2d), float),
@@ -2392,7 +2392,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dsymv(
+task dsymv_gpu(
 	uplo : int,
 	alpha : double,
 	A : region(ispace(int2d), double),
@@ -2415,7 +2415,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task ssbmv(
+task ssbmv_gpu(
 	uplo : int,
 	k : int,
 	alpha : float,
@@ -2439,7 +2439,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dsbmv(
+task dsbmv_gpu(
 	uplo : int,
 	k : int,
 	alpha : double,
@@ -2463,7 +2463,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task sspmv(
+task sspmv_gpu(
 	uplo : int,
 	n : int,
 	alpha : float,
@@ -2486,7 +2486,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dspmv(
+task dspmv_gpu(
 	uplo : int,
 	n : int,
 	alpha : double,
@@ -2509,7 +2509,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task sger(
+task sger_gpu(
 	alpha : float,
 	X : region(ispace(int1d), float),
 	Y : region(ispace(int1d), float),
@@ -2531,7 +2531,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dger(
+task dger_gpu(
 	alpha : double,
 	X : region(ispace(int1d), double),
 	Y : region(ispace(int1d), double),
@@ -2553,7 +2553,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task ssyr(
+task ssyr_gpu(
 	uplo : int,
 	alpha : float,
 	X : region(ispace(int1d), float),
@@ -2571,7 +2571,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dsyr(
+task dsyr_gpu(
 	uplo : int,
 	alpha : double,
 	X : region(ispace(int1d), double),
@@ -2589,7 +2589,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task sspr(
+task sspr_gpu(
 	uplo : int,
 	n : int,
 	alpha : float,
@@ -2607,7 +2607,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dspr(
+task dspr_gpu(
 	uplo : int,
 	n : int,
 	alpha : double,
@@ -2625,7 +2625,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task ssyr2(
+task ssyr2_gpu(
 	uplo : int,
 	alpha : float,
 	X : region(ispace(int1d), float),
@@ -2653,7 +2653,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dsyr2(
+task dsyr2_gpu(
 	uplo : int,
 	alpha : double,
 	X : region(ispace(int1d), double),
@@ -2681,7 +2681,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task sspr2(
+task sspr2_gpu(
 	uplo : int,
 	n : int,
 	alpha : float,
@@ -2703,7 +2703,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dspr2(
+task dspr2_gpu(
 	uplo : int,
 	n : int,
 	alpha : double,
@@ -2725,7 +2725,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task sgemm(
+task sgemm_gpu(
 	transa : int,
 	transb : int,
 	alpha : float,
@@ -2769,7 +2769,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dgemm(
+task dgemm_gpu(
 	transa : int,
 	transb : int,
 	alpha : double,
@@ -2813,7 +2813,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task ssyrk(
+task ssyrk_gpu(
 	uplo : int,
 	trans : int,
 	alpha : float,
@@ -2846,7 +2846,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dsyrk(
+task dsyrk_gpu(
 	uplo : int,
 	trans : int,
 	alpha : double,
@@ -2879,7 +2879,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task ssyr2k(
+task ssyr2k_gpu(
 	uplo : int,
 	trans : int,
 	alpha : float,
@@ -2916,7 +2916,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dsyr2k(
+task dsyr2k_gpu(
 	uplo : int,
 	trans : int,
 	alpha : double,
@@ -2953,7 +2953,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task ssymm(
+task ssymm_gpu(
 	side : int,
 	uplo : int,
 	alpha : float,
@@ -2990,7 +2990,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dsymm(
+task dsymm_gpu(
 	side : int,
 	uplo : int,
 	alpha : double,
@@ -3027,7 +3027,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task strsm(
+task strsm_gpu(
 	side : int,
 	uplo : int,
 	trans : int,
@@ -3049,7 +3049,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dtrsm(
+task dtrsm_gpu(
 	side : int,
 	uplo : int,
 	trans : int,
@@ -3071,7 +3071,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task strmm(
+task strmm_gpu(
 	side : int,
 	uplo : int,
 	trans : int,
@@ -3103,7 +3103,7 @@ do
 end
 
 __demand(__cuda, __leaf)
-task dtrmm(
+task dtrmm_gpu(
 	side : int,
 	uplo : int,
 	trans : int,

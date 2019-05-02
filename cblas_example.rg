@@ -15,8 +15,7 @@
 import "regent"
 local c = regentlib.c
 local cblas = terralib.includec("cblas.h")
-require("blas")
-
+require("cblas")
 
 task main()
 
