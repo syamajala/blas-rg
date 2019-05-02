@@ -1,11 +1,18 @@
 #include "context_manager.h"
 
-void create_handle(cublasHandle_t *handle)
+cublasHandle_t get_handle()
 {
-  cublasStatus_t stat;
-  stat = cublasCreate(handle);
-  if (stat != CUBLAS_STATUS_SUCCESS)
+  static __thread cublasHandle_t handle;
+
+  if(handle == NULL)
   {
-    printf("CUBLAS initialization failed!\n");
+    cublasStatus_t stat;
+    stat = cublasCreate(&handle);
+
+    if (stat != CUBLAS_STATUS_SUCCESS)
+    {
+      printf("CUBLAS initialization failed! Status: %d\n", stat);
+    }
   }
+  return handle;
 }

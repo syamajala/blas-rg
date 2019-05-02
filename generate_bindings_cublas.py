@@ -178,8 +178,7 @@ class Func():
                 cblas_args.append(f"raw{prev_name}.offset")
                 continue
             elif name == "handle":
-                body.append("var handle : cublas.cublasHandle_t")
-                body.append("mgr.create_handle(&handle)")
+                body.append("var handle : cublas.cublasHandle_t = mgr.get_handle()")
                 cblas_args.append("handle")
                 continue
 

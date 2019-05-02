@@ -68,8 +68,7 @@ terra snrm2_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var stream : cuda_runtime.cudaStream_t
@@ -85,8 +84,7 @@ terra dnrm2_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var stream : cuda_runtime.cudaStream_t
@@ -105,8 +103,7 @@ terra sdot_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
@@ -127,8 +124,7 @@ terra ddot_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
@@ -146,8 +142,7 @@ terra sscal_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var stream : cuda_runtime.cudaStream_t
@@ -163,8 +158,7 @@ terra dscal_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var stream : cuda_runtime.cudaStream_t
@@ -183,8 +177,7 @@ terra saxpy_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
@@ -205,8 +198,7 @@ terra daxpy_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
@@ -226,8 +218,7 @@ terra scopy_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
@@ -247,8 +238,7 @@ terra dcopy_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
@@ -268,8 +258,7 @@ terra sswap_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
@@ -289,8 +278,7 @@ terra dswap_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
@@ -308,8 +296,7 @@ terra isamax_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var stream : cuda_runtime.cudaStream_t
@@ -325,8 +312,7 @@ terra idamax_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var stream : cuda_runtime.cudaStream_t
@@ -342,8 +328,7 @@ terra sasum_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var stream : cuda_runtime.cudaStream_t
@@ -359,8 +344,7 @@ terra dasum_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var stream : cuda_runtime.cudaStream_t
@@ -380,8 +364,7 @@ terra srot_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
@@ -403,8 +386,7 @@ terra drot_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
@@ -421,8 +403,7 @@ terra srotg_terra(
 	c : float,
 	s : float)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var stream : cuda_runtime.cudaStream_t
         cuda_runtime.cudaStreamCreate(&stream)
         cublas.cublasSetStream_v2(handle, stream)
@@ -435,8 +416,7 @@ terra drotg_terra(
 	c : double,
 	s : double)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var stream : cuda_runtime.cudaStream_t
         cuda_runtime.cudaStreamCreate(&stream)
         cublas.cublasSetStream_v2(handle, stream)
@@ -455,8 +435,7 @@ terra srotm_terra(
 	prPARAM : c.legion_physical_region_t,
 	fldPARAM : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
@@ -481,8 +460,7 @@ terra drotm_terra(
 	prPARAM : c.legion_physical_region_t,
 	fldPARAM : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
@@ -504,8 +482,7 @@ terra srotmg_terra(
 	prPARAM : c.legion_physical_region_t,
 	fldPARAM : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawPARAM : float_ptr
 	[get_raw_ptr_factory(1, float, rectPARAM, prPARAM, fldPARAM, rawPARAM, float_ptr)]
 	var stream : cuda_runtime.cudaStream_t
@@ -523,8 +500,7 @@ terra drotmg_terra(
 	prPARAM : c.legion_physical_region_t,
 	fldPARAM : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawPARAM : double_ptr
 	[get_raw_ptr_factory(1, double, rectPARAM, prPARAM, fldPARAM, rawPARAM, double_ptr)]
 	var stream : cuda_runtime.cudaStream_t
@@ -549,8 +525,7 @@ terra sgemv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawX : float_ptr
@@ -579,8 +554,7 @@ terra dgemv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawX : double_ptr
@@ -611,8 +585,7 @@ terra sgbmv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawX : float_ptr
@@ -643,8 +616,7 @@ terra dgbmv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawX : double_ptr
@@ -669,8 +641,7 @@ terra strmv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawX : float_ptr
@@ -693,8 +664,7 @@ terra dtrmv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawX : double_ptr
@@ -718,8 +688,7 @@ terra stbmv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawX : float_ptr
@@ -743,8 +712,7 @@ terra dtbmv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawX : double_ptr
@@ -767,8 +735,7 @@ terra stpmv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawAP : float_ptr
 	[get_raw_ptr_factory(1, float, rectAP, prAP, fldAP, rawAP, float_ptr)]
 	var rawX : float_ptr
@@ -791,8 +758,7 @@ terra dtpmv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawAP : double_ptr
 	[get_raw_ptr_factory(1, double, rectAP, prAP, fldAP, rawAP, double_ptr)]
 	var rawX : double_ptr
@@ -815,8 +781,7 @@ terra strsv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawX : float_ptr
@@ -839,8 +804,7 @@ terra dtrsv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawX : double_ptr
@@ -863,8 +827,7 @@ terra stpsv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawAP : float_ptr
 	[get_raw_ptr_factory(1, float, rectAP, prAP, fldAP, rawAP, float_ptr)]
 	var rawX : float_ptr
@@ -887,8 +850,7 @@ terra dtpsv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawAP : double_ptr
 	[get_raw_ptr_factory(1, double, rectAP, prAP, fldAP, rawAP, double_ptr)]
 	var rawX : double_ptr
@@ -912,8 +874,7 @@ terra stbsv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawX : float_ptr
@@ -937,8 +898,7 @@ terra dtbsv_terra(
 	prX : c.legion_physical_region_t,
 	fldX : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawX : double_ptr
@@ -964,8 +924,7 @@ terra ssymv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawX : float_ptr
@@ -993,8 +952,7 @@ terra dsymv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawX : double_ptr
@@ -1023,8 +981,7 @@ terra ssbmv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawX : float_ptr
@@ -1053,8 +1010,7 @@ terra dsbmv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawX : double_ptr
@@ -1082,8 +1038,7 @@ terra sspmv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawAP : float_ptr
 	[get_raw_ptr_factory(1, float, rectAP, prAP, fldAP, rawAP, float_ptr)]
 	var rawX : float_ptr
@@ -1111,8 +1066,7 @@ terra dspmv_terra(
 	prY : c.legion_physical_region_t,
 	fldY : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawAP : double_ptr
 	[get_raw_ptr_factory(1, double, rectAP, prAP, fldAP, rawAP, double_ptr)]
 	var rawX : double_ptr
@@ -1139,8 +1093,7 @@ terra sger_terra(
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
@@ -1167,8 +1120,7 @@ terra dger_terra(
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
@@ -1192,8 +1144,7 @@ terra ssyr_terra(
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawA : float_ptr
@@ -1215,8 +1166,7 @@ terra dsyr_terra(
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawA : double_ptr
@@ -1238,8 +1188,7 @@ terra sspr_terra(
 	prAP : c.legion_physical_region_t,
 	fldAP : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawAP : float_ptr
@@ -1261,8 +1210,7 @@ terra dspr_terra(
 	prAP : c.legion_physical_region_t,
 	fldAP : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawAP : double_ptr
@@ -1287,8 +1235,7 @@ terra ssyr2_terra(
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
@@ -1315,8 +1262,7 @@ terra dsyr2_terra(
 	prA : c.legion_physical_region_t,
 	fldA : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
@@ -1343,8 +1289,7 @@ terra sspr2_terra(
 	prAP : c.legion_physical_region_t,
 	fldAP : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : float_ptr
 	[get_raw_ptr_factory(1, float, rectX, prX, fldX, rawX, float_ptr)]
 	var rawY : float_ptr
@@ -1371,8 +1316,7 @@ terra dspr2_terra(
 	prAP : c.legion_physical_region_t,
 	fldAP : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawX : double_ptr
 	[get_raw_ptr_factory(1, double, rectX, prX, fldX, rawX, double_ptr)]
 	var rawY : double_ptr
@@ -1403,8 +1347,7 @@ terra sgemm_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawB : float_ptr
@@ -1435,8 +1378,7 @@ terra dgemm_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawB : double_ptr
@@ -1463,8 +1405,7 @@ terra ssyrk_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawC : float_ptr
@@ -1489,8 +1430,7 @@ terra dsyrk_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawC : double_ptr
@@ -1518,8 +1458,7 @@ terra ssyr2k_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawB : float_ptr
@@ -1549,8 +1488,7 @@ terra dsyr2k_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawB : double_ptr
@@ -1580,8 +1518,7 @@ terra ssymm_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawB : float_ptr
@@ -1611,8 +1548,7 @@ terra dsymm_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawB : double_ptr
@@ -1640,8 +1576,7 @@ terra strsm_terra(
 	prB : c.legion_physical_region_t,
 	fldB : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawB : float_ptr
@@ -1667,8 +1602,7 @@ terra dtrsm_terra(
 	prB : c.legion_physical_region_t,
 	fldB : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawB : double_ptr
@@ -1697,8 +1631,7 @@ terra strmm_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : float_ptr
 	[get_raw_ptr_factory(2, float, rectA, prA, fldA, rawA, float_ptr)]
 	var rawB : float_ptr
@@ -1729,8 +1662,7 @@ terra dtrmm_terra(
 	prC : c.legion_physical_region_t,
 	fldC : c.legion_field_id_t)
 
-	var handle : cublas.cublasHandle_t
-	mgr.create_handle(&handle)
+	var handle : cublas.cublasHandle_t = mgr.get_handle()
 	var rawA : double_ptr
 	[get_raw_ptr_factory(2, double, rectA, prA, fldA, rawA, double_ptr)]
 	var rawB : double_ptr

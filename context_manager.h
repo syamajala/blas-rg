@@ -23,7 +23,7 @@
 extern "C" {
 #endif
 
-void create_handle(cublasHandle_t *handle);
+cublasHandle_t get_handle();
 
 #ifdef __cplusplus
 }
