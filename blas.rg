@@ -1,4 +1,4 @@
--- Copyright 2019 Stanford University
+-- Copyright 2022 Stanford University
 --
 -- Licensed under the Apache License, Version 2.0 (the "License");
 -- you may not use this file except in compliance with the License.
@@ -11,73 +11,792 @@
 -- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
-require("cblas")
-require("cublas")
-sdot:set_cuda_variant(sdot_gpu:get_cuda_variant())
-ddot:set_cuda_variant(ddot_gpu:get_cuda_variant())
-snrm2:set_cuda_variant(snrm2_gpu:get_cuda_variant())
-sasum:set_cuda_variant(sasum_gpu:get_cuda_variant())
-dnrm2:set_cuda_variant(dnrm2_gpu:get_cuda_variant())
-dasum:set_cuda_variant(dasum_gpu:get_cuda_variant())
-isamax:set_cuda_variant(isamax_gpu:get_cuda_variant())
-idamax:set_cuda_variant(idamax_gpu:get_cuda_variant())
-sswap:set_cuda_variant(sswap_gpu:get_cuda_variant())
-scopy:set_cuda_variant(scopy_gpu:get_cuda_variant())
-saxpy:set_cuda_variant(saxpy_gpu:get_cuda_variant())
-dswap:set_cuda_variant(dswap_gpu:get_cuda_variant())
-dcopy:set_cuda_variant(dcopy_gpu:get_cuda_variant())
-daxpy:set_cuda_variant(daxpy_gpu:get_cuda_variant())
-srotg:set_cuda_variant(srotg_gpu:get_cuda_variant())
-srotmg:set_cuda_variant(srotmg_gpu:get_cuda_variant())
-srot:set_cuda_variant(srot_gpu:get_cuda_variant())
-srotm:set_cuda_variant(srotm_gpu:get_cuda_variant())
-drotg:set_cuda_variant(drotg_gpu:get_cuda_variant())
-drotmg:set_cuda_variant(drotmg_gpu:get_cuda_variant())
-drot:set_cuda_variant(drot_gpu:get_cuda_variant())
-drotm:set_cuda_variant(drotm_gpu:get_cuda_variant())
-sscal:set_cuda_variant(sscal_gpu:get_cuda_variant())
-dscal:set_cuda_variant(dscal_gpu:get_cuda_variant())
-sgemv:set_cuda_variant(sgemv_gpu:get_cuda_variant())
-sgbmv:set_cuda_variant(sgbmv_gpu:get_cuda_variant())
-strmv:set_cuda_variant(strmv_gpu:get_cuda_variant())
-stbmv:set_cuda_variant(stbmv_gpu:get_cuda_variant())
-stpmv:set_cuda_variant(stpmv_gpu:get_cuda_variant())
-strsv:set_cuda_variant(strsv_gpu:get_cuda_variant())
-stbsv:set_cuda_variant(stbsv_gpu:get_cuda_variant())
-stpsv:set_cuda_variant(stpsv_gpu:get_cuda_variant())
-dgemv:set_cuda_variant(dgemv_gpu:get_cuda_variant())
-dgbmv:set_cuda_variant(dgbmv_gpu:get_cuda_variant())
-dtrmv:set_cuda_variant(dtrmv_gpu:get_cuda_variant())
-dtbmv:set_cuda_variant(dtbmv_gpu:get_cuda_variant())
-dtpmv:set_cuda_variant(dtpmv_gpu:get_cuda_variant())
-dtrsv:set_cuda_variant(dtrsv_gpu:get_cuda_variant())
-dtbsv:set_cuda_variant(dtbsv_gpu:get_cuda_variant())
-dtpsv:set_cuda_variant(dtpsv_gpu:get_cuda_variant())
-ssymv:set_cuda_variant(ssymv_gpu:get_cuda_variant())
-ssbmv:set_cuda_variant(ssbmv_gpu:get_cuda_variant())
-sspmv:set_cuda_variant(sspmv_gpu:get_cuda_variant())
-sger:set_cuda_variant(sger_gpu:get_cuda_variant())
-ssyr:set_cuda_variant(ssyr_gpu:get_cuda_variant())
-sspr:set_cuda_variant(sspr_gpu:get_cuda_variant())
-ssyr2:set_cuda_variant(ssyr2_gpu:get_cuda_variant())
-sspr2:set_cuda_variant(sspr2_gpu:get_cuda_variant())
-dsymv:set_cuda_variant(dsymv_gpu:get_cuda_variant())
-dsbmv:set_cuda_variant(dsbmv_gpu:get_cuda_variant())
-dspmv:set_cuda_variant(dspmv_gpu:get_cuda_variant())
-dger:set_cuda_variant(dger_gpu:get_cuda_variant())
-dsyr:set_cuda_variant(dsyr_gpu:get_cuda_variant())
-dspr:set_cuda_variant(dspr_gpu:get_cuda_variant())
-dsyr2:set_cuda_variant(dsyr2_gpu:get_cuda_variant())
-dspr2:set_cuda_variant(dspr2_gpu:get_cuda_variant())
-sgemm:set_cuda_variant(sgemm_gpu:get_cuda_variant())
-ssymm:set_cuda_variant(ssymm_gpu:get_cuda_variant())
-ssyrk:set_cuda_variant(ssyrk_gpu:get_cuda_variant())
-ssyr2k:set_cuda_variant(ssyr2k_gpu:get_cuda_variant())
-strmm:set_cuda_variant(strmm_gpu:get_cuda_variant())
-strsm:set_cuda_variant(strsm_gpu:get_cuda_variant())
-dgemm:set_cuda_variant(dgemm_gpu:get_cuda_variant())
-dsymm:set_cuda_variant(dsymm_gpu:get_cuda_variant())
-dsyrk:set_cuda_variant(dsyrk_gpu:get_cuda_variant())
-dsyr2k:set_cuda_variant(dsyr2k_gpu:get_cuda_variant())
-dtrmm:set_cuda_variant(dtrmm_gpu:get_cuda_variant())
-dtrsm:set_cuda_variant(dtrsm_gpu:get_cuda_variant())
+import "regent"
+
+extern task sdot(
+	X : region(ispace(int1d), float),
+	Y : region(ispace(int1d), float))
+where
+	reads(X),
+	reads(Y)
+end
+
+extern task ddot(
+	X : region(ispace(int1d), double),
+	Y : region(ispace(int1d), double))
+where
+	reads(X),
+	reads(Y)
+end
+
+extern task snrm2(
+	X : region(ispace(int1d), float))
+where
+	reads(X)
+end
+
+extern task sasum(
+	X : region(ispace(int1d), float))
+where
+	reads(X)
+end
+
+extern task dnrm2(
+	X : region(ispace(int1d), double))
+where
+	reads(X)
+end
+
+extern task dasum(
+	X : region(ispace(int1d), double))
+where
+	reads(X)
+end
+
+extern task isamax(
+	X : region(ispace(int1d), float))
+where
+	reads(X)
+end
+
+extern task idamax(
+	X : region(ispace(int1d), double))
+where
+	reads(X)
+end
+
+extern task sswap(
+	X : region(ispace(int1d), float),
+	Y : region(ispace(int1d), float))
+where
+	reads writes(X),
+	reads writes(Y)
+end
+
+extern task scopy(
+	X : region(ispace(int1d), float),
+	Y : region(ispace(int1d), float))
+where
+	reads(X),
+	reads writes(Y)
+end
+
+extern task saxpy(
+	alpha : float,
+	X : region(ispace(int1d), float),
+	Y : region(ispace(int1d), float))
+where
+	reads(X),
+	reads writes(Y)
+end
+
+extern task dswap(
+	X : region(ispace(int1d), double),
+	Y : region(ispace(int1d), double))
+where
+	reads writes(X),
+	reads writes(Y)
+end
+
+extern task dcopy(
+	X : region(ispace(int1d), double),
+	Y : region(ispace(int1d), double))
+where
+	reads(X),
+	reads writes(Y)
+end
+
+extern task daxpy(
+	alpha : double,
+	X : region(ispace(int1d), double),
+	Y : region(ispace(int1d), double))
+where
+	reads(X),
+	reads writes(Y)
+end
+
+extern task srotg(
+	a : float,
+	b : float,
+	c : float,
+	s : float)
+
+extern task srotmg(
+	d1 : float,
+	d2 : float,
+	b1 : float,
+	b2 : float,
+	P : region(ispace(int1d), float))
+where
+	reads writes(P)
+end
+
+extern task srot(
+	X : region(ispace(int1d), float),
+	Y : region(ispace(int1d), float),
+	c : float,
+	s : float)
+where
+	reads writes(X),
+	reads writes(Y)
+end
+
+extern task srotm(
+	X : region(ispace(int1d), float),
+	Y : region(ispace(int1d), float),
+	P : region(ispace(int1d), float))
+where
+	reads writes(X),
+	reads writes(Y),
+	reads writes(P)
+end
+
+extern task drotg(
+	a : double,
+	b : double,
+	c : double,
+	s : double)
+
+extern task drotmg(
+	d1 : double,
+	d2 : double,
+	b1 : double,
+	b2 : double,
+	P : region(ispace(int1d), double))
+where
+	reads writes(P)
+end
+
+extern task drot(
+	X : region(ispace(int1d), double),
+	Y : region(ispace(int1d), double),
+	c : double,
+	s : double)
+where
+	reads writes(X),
+	reads writes(Y)
+end
+
+extern task drotm(
+	X : region(ispace(int1d), double),
+	Y : region(ispace(int1d), double),
+	P : region(ispace(int1d), double))
+where
+	reads writes(X),
+	reads writes(Y),
+	reads writes(P)
+end
+
+extern task sscal(
+	alpha : float,
+	X : region(ispace(int1d), float))
+where
+	reads writes(X)
+end
+
+extern task dscal(
+	alpha : double,
+	X : region(ispace(int1d), double))
+where
+	reads writes(X)
+end
+
+extern task sgemv(
+	layout : int,
+	TransA : int,
+	alpha : float,
+	A : region(ispace(int2d), float),
+	X : region(ispace(int1d), float),
+	beta : float,
+	Y : region(ispace(int1d), float))
+where
+	reads(A),
+	reads(X),
+	reads writes(Y)
+end
+
+extern task sgbmv(
+	layout : int,
+	TransA : int,
+	M : int,
+	N : int,
+	KL : int,
+	KU : int,
+	alpha : float,
+	A : region(ispace(int2d), float),
+	X : region(ispace(int1d), float),
+	beta : float,
+	Y : region(ispace(int1d), float))
+where
+	reads(A),
+	reads(X),
+	reads writes(Y)
+end
+
+extern task strmv(
+	layout : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	A : region(ispace(int2d), float),
+	X : region(ispace(int1d), float))
+where
+	reads(A),
+	reads writes(X)
+end
+
+extern task stbmv(
+	layout : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	K : int,
+	A : region(ispace(int2d), float),
+	X : region(ispace(int1d), float))
+where
+	reads(A),
+	reads writes(X)
+end
+
+extern task stpmv(
+	layout : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	N : int,
+	AP : region(ispace(int2d), float),
+	X : region(ispace(int1d), float))
+where
+	reads(AP),
+	reads writes(X)
+end
+
+extern task strsv(
+	layout : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	A : region(ispace(int2d), float),
+	X : region(ispace(int1d), float))
+where
+	reads(A),
+	reads writes(X)
+end
+
+extern task stbsv(
+	layout : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	K : int,
+	A : region(ispace(int2d), float),
+	X : region(ispace(int1d), float))
+where
+	reads(A),
+	reads writes(X)
+end
+
+extern task stpsv(
+	layout : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	N : int,
+	AP : region(ispace(int2d), float),
+	X : region(ispace(int1d), float))
+where
+	reads(AP),
+	reads writes(X)
+end
+
+extern task dgemv(
+	layout : int,
+	TransA : int,
+	alpha : double,
+	A : region(ispace(int2d), double),
+	X : region(ispace(int1d), double),
+	beta : double,
+	Y : region(ispace(int1d), double))
+where
+	reads(A),
+	reads(X),
+	reads writes(Y)
+end
+
+extern task dgbmv(
+	layout : int,
+	TransA : int,
+	M : int,
+	N : int,
+	KL : int,
+	KU : int,
+	alpha : double,
+	A : region(ispace(int2d), double),
+	X : region(ispace(int1d), double),
+	beta : double,
+	Y : region(ispace(int1d), double))
+where
+	reads(A),
+	reads(X),
+	reads writes(Y)
+end
+
+extern task dtrmv(
+	layout : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	A : region(ispace(int2d), double),
+	X : region(ispace(int1d), double))
+where
+	reads(A),
+	reads writes(X)
+end
+
+extern task dtbmv(
+	layout : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	K : int,
+	A : region(ispace(int2d), double),
+	X : region(ispace(int1d), double))
+where
+	reads(A),
+	reads writes(X)
+end
+
+extern task dtpmv(
+	layout : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	N : int,
+	AP : region(ispace(int2d), double),
+	X : region(ispace(int1d), double))
+where
+	reads(AP),
+	reads writes(X)
+end
+
+extern task dtrsv(
+	layout : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	A : region(ispace(int2d), double),
+	X : region(ispace(int1d), double))
+where
+	reads(A),
+	reads writes(X)
+end
+
+extern task dtbsv(
+	layout : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	K : int,
+	A : region(ispace(int2d), double),
+	X : region(ispace(int1d), double))
+where
+	reads(A),
+	reads writes(X)
+end
+
+extern task dtpsv(
+	layout : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	N : int,
+	AP : region(ispace(int2d), double),
+	X : region(ispace(int1d), double))
+where
+	reads(AP),
+	reads writes(X)
+end
+
+extern task ssymv(
+	layout : int,
+	Uplo : int,
+	alpha : float,
+	A : region(ispace(int2d), float),
+	X : region(ispace(int1d), float),
+	beta : float,
+	Y : region(ispace(int1d), float))
+where
+	reads(A),
+	reads(X),
+	reads writes(Y)
+end
+
+extern task ssbmv(
+	layout : int,
+	Uplo : int,
+	K : int,
+	alpha : float,
+	A : region(ispace(int2d), float),
+	X : region(ispace(int1d), float),
+	beta : float,
+	Y : region(ispace(int1d), float))
+where
+	reads(A),
+	reads(X),
+	reads writes(Y)
+end
+
+extern task sspmv(
+	layout : int,
+	Uplo : int,
+	N : int,
+	alpha : float,
+	AP : region(ispace(int2d), float),
+	X : region(ispace(int1d), float),
+	beta : float,
+	Y : region(ispace(int1d), float))
+where
+	reads(AP),
+	reads(X),
+	reads writes(Y)
+end
+
+extern task sger(
+	layout : int,
+	alpha : float,
+	X : region(ispace(int1d), float),
+	Y : region(ispace(int1d), float),
+	A : region(ispace(int2d), float))
+where
+	reads(X),
+	reads(Y),
+	reads writes(A)
+end
+
+extern task ssyr(
+	layout : int,
+	Uplo : int,
+	alpha : float,
+	X : region(ispace(int1d), float),
+	A : region(ispace(int2d), float))
+where
+	reads(X),
+	reads writes(A)
+end
+
+extern task sspr(
+	layout : int,
+	Uplo : int,
+	N : int,
+	alpha : float,
+	X : region(ispace(int1d), float),
+	AP : region(ispace(int2d), float))
+where
+	reads(X),
+	reads writes(AP)
+end
+
+extern task ssyr2(
+	layout : int,
+	Uplo : int,
+	alpha : float,
+	X : region(ispace(int1d), float),
+	Y : region(ispace(int1d), float),
+	A : region(ispace(int2d), float))
+where
+	reads(X),
+	reads(Y),
+	reads writes(A)
+end
+
+extern task sspr2(
+	layout : int,
+	Uplo : int,
+	N : int,
+	alpha : float,
+	X : region(ispace(int1d), float),
+	Y : region(ispace(int1d), float),
+	A : region(ispace(int2d), float))
+where
+	reads(X),
+	reads(Y),
+	reads writes(A)
+end
+
+extern task dsymv(
+	layout : int,
+	Uplo : int,
+	alpha : double,
+	A : region(ispace(int2d), double),
+	X : region(ispace(int1d), double),
+	beta : double,
+	Y : region(ispace(int1d), double))
+where
+	reads(A),
+	reads(X),
+	reads writes(Y)
+end
+
+extern task dsbmv(
+	layout : int,
+	Uplo : int,
+	K : int,
+	alpha : double,
+	A : region(ispace(int2d), double),
+	X : region(ispace(int1d), double),
+	beta : double,
+	Y : region(ispace(int1d), double))
+where
+	reads(A),
+	reads(X),
+	reads writes(Y)
+end
+
+extern task dspmv(
+	layout : int,
+	Uplo : int,
+	N : int,
+	alpha : double,
+	AP : region(ispace(int2d), double),
+	X : region(ispace(int1d), double),
+	beta : double,
+	Y : region(ispace(int1d), double))
+where
+	reads(AP),
+	reads(X),
+	reads writes(Y)
+end
+
+extern task dger(
+	layout : int,
+	alpha : double,
+	X : region(ispace(int1d), double),
+	Y : region(ispace(int1d), double),
+	A : region(ispace(int2d), double))
+where
+	reads(X),
+	reads(Y),
+	reads writes(A)
+end
+
+extern task dsyr(
+	layout : int,
+	Uplo : int,
+	alpha : double,
+	X : region(ispace(int1d), double),
+	A : region(ispace(int2d), double))
+where
+	reads(X),
+	reads writes(A)
+end
+
+extern task dspr(
+	layout : int,
+	Uplo : int,
+	N : int,
+	alpha : double,
+	X : region(ispace(int1d), double),
+	AP : region(ispace(int2d), double))
+where
+	reads(X),
+	reads writes(AP)
+end
+
+extern task dsyr2(
+	layout : int,
+	Uplo : int,
+	alpha : double,
+	X : region(ispace(int1d), double),
+	Y : region(ispace(int1d), double),
+	A : region(ispace(int2d), double))
+where
+	reads(X),
+	reads(Y),
+	reads writes(A)
+end
+
+extern task dspr2(
+	layout : int,
+	Uplo : int,
+	N : int,
+	alpha : double,
+	X : region(ispace(int1d), double),
+	Y : region(ispace(int1d), double),
+	A : region(ispace(int2d), double))
+where
+	reads(X),
+	reads(Y),
+	reads writes(A)
+end
+
+extern task sgemm(
+	layout : int,
+	TransA : int,
+	TransB : int,
+	alpha : float,
+	A : region(ispace(int2d), float),
+	B : region(ispace(int2d), float),
+	beta : float,
+	C : region(ispace(int2d), float))
+where
+	reads(A),
+	reads(B),
+	reads writes(C)
+end
+
+extern task ssymm(
+	layout : int,
+	Side : int,
+	Uplo : int,
+	alpha : float,
+	A : region(ispace(int2d), float),
+	B : region(ispace(int2d), float),
+	beta : float,
+	C : region(ispace(int2d), float))
+where
+	reads(A),
+	reads(B),
+	reads writes(C)
+end
+
+extern task ssyrk(
+	layout : int,
+	Uplo : int,
+	Trans : int,
+	alpha : float,
+	A : region(ispace(int2d), float),
+	beta : float,
+	C : region(ispace(int2d), float))
+where
+	reads(A),
+	reads writes(C)
+end
+
+extern task ssyr2k(
+	layout : int,
+	Uplo : int,
+	Trans : int,
+	alpha : float,
+	A : region(ispace(int2d), float),
+	B : region(ispace(int2d), float),
+	beta : float,
+	C : region(ispace(int2d), float))
+where
+	reads(A),
+	reads(B),
+	reads writes(C)
+end
+
+extern task strmm(
+	layout : int,
+	Side : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	alpha : float,
+	A : region(ispace(int2d), float),
+	B : region(ispace(int2d), float))
+where
+	reads(A),
+	reads writes(B)
+end
+
+extern task strsm(
+	layout : int,
+	Side : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	alpha : float,
+	A : region(ispace(int2d), float),
+	B : region(ispace(int2d), float))
+where
+	reads(A),
+	reads writes(B)
+end
+
+extern task dgemm(
+	layout : int,
+	TransA : int,
+	TransB : int,
+	alpha : double,
+	A : region(ispace(int2d), double),
+	B : region(ispace(int2d), double),
+	beta : double,
+	C : region(ispace(int2d), double))
+where
+	reads(A),
+	reads(B),
+	reads writes(C)
+end
+
+extern task dsymm(
+	layout : int,
+	Side : int,
+	Uplo : int,
+	alpha : double,
+	A : region(ispace(int2d), double),
+	B : region(ispace(int2d), double),
+	beta : double,
+	C : region(ispace(int2d), double))
+where
+	reads(A),
+	reads(B),
+	reads writes(C)
+end
+
+extern task dsyrk(
+	layout : int,
+	Uplo : int,
+	Trans : int,
+	alpha : double,
+	A : region(ispace(int2d), double),
+	beta : double,
+	C : region(ispace(int2d), double))
+where
+	reads(A),
+	reads writes(C)
+end
+
+extern task dsyr2k(
+	layout : int,
+	Uplo : int,
+	Trans : int,
+	alpha : double,
+	A : region(ispace(int2d), double),
+	B : region(ispace(int2d), double),
+	beta : double,
+	C : region(ispace(int2d), double))
+where
+	reads(A),
+	reads(B),
+	reads writes(C)
+end
+
+extern task dtrmm(
+	layout : int,
+	Side : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	alpha : double,
+	A : region(ispace(int2d), double),
+	B : region(ispace(int2d), double))
+where
+	reads(A),
+	reads writes(B)
+end
+
+extern task dtrsm(
+	layout : int,
+	Side : int,
+	Uplo : int,
+	TransA : int,
+	Diag : int,
+	alpha : double,
+	A : region(ispace(int2d), double),
+	B : region(ispace(int2d), double))
+where
+	reads(A),
+	reads writes(B)
+end
