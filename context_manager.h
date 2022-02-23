@@ -17,13 +17,13 @@
 
 #include <stdio.h>
 #include <cuda_runtime.h>
-#include "cublas_v2.h"
+#include "cusolverDn.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-cublasHandle_t get_handle();
+cusolverDnHandle_t get_handle();
 
 #ifdef __cplusplus
 }

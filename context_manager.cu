@@ -1,17 +1,17 @@
 #include "context_manager.h"
 
-cublasHandle_t get_handle()
+cusolverDnHandle_t get_handle()
 {
-  static __thread cublasHandle_t handle;
+  static __thread cusolverDnHandle_t handle;
 
   if(handle == NULL)
   {
-    cublasStatus_t stat;
-    stat = cublasCreate(&handle);
+    cusolverStatus_t stat;
+    stat = cusolverDnCreate(&handle);
 
-    if (stat != CUBLAS_STATUS_SUCCESS)
+    if (stat != CUSOLVER_STATUS_SUCCESS)
     {
-      printf("CUBLAS initialization failed! Status: %d\n", stat);
+      printf("CUSOLVER initialization failed! Status: %d\n", stat);
     }
   }
   return handle;

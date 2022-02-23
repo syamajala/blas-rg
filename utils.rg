@@ -4,23 +4,23 @@ local c = regentlib.c
 local utils = {}
 
 utils.use_gpu = nil
-utils.blas_header = nil
-utils.blas_library = nil
+utils.lapack_header = nil
+utils.lapack_library = nil
 
 for k, v in pairs(arg) do
   if v == "--use-gpu" then
     utils.use_gpu = true
-  elseif v == "--blas-header" then
-    utils.blas_header = arg[k+1]
-  elseif v == "--blas-library" then
-    utils.blas_library = arg[k+1]
+  elseif v == "--lapack-header" then
+    utils.lapack_header = arg[k+1]
+  elseif v == "--lapack-library" then
+    utils.lapack_library = arg[k+1]
   end
 end
 
-assert(utils.blas_header ~= nil, "Missing BLAS header.")
-assert(utils.blas_library ~= nil, "Missing BLAS library.")
-terralib.linklibrary(utils.blas_library)
-utils.cblas = terralib.includec("cblas.h", {"-I", utils.blas_header})
+assert(utils.lapack_header ~= nil, "Missing LAPACK header.")
+assert(utils.lapack_library ~= nil, "Missing LAPACK library.")
+terralib.linklibrary(utils.lapack_library)
+utils.lapacke = terralib.includec("lapacke.h", {"-I", utils.lapack_header})
 
 function raw_ptr_factory(typ)
   local struct raw_ptr
