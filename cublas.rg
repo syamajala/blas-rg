@@ -26,12 +26,12 @@ local cuda_home = os.getenv("CUDA_HOME")
 terralib.includepath = terralib.includepath .. ";" .. cuda_home .. "/include"
 
 terralib.linklibrary(cuda_home .. "/lib64/libcublas.so")
-terralib.linklibrary("./libcontext_manager.so")
+terralib.linklibrary(utils.output_dir .. "/libcontext_manager.so")
 
 local cuda_runtime = terralib.includec("cuda_runtime.h")
 local cublas = terralib.includec("cublas_v2.h")
 
-local mgr = terralib.includec("context_manager.h", {"-I", "../"})
+local mgr = terralib.includec("context_manager.h", {"-I", "./"})
 
 
 terra snrm2_gpu_terra(
@@ -1656,6 +1656,6 @@ terra dtrmm_gpu_terra(
 	return cublas.cublasDtrmm_v2(handle, side, uplo, trans, diag, m, n, &alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset, rawC.ptr, rawC.offset)
 end
 
-local tasks_h = "cublas_tasks.h"
-local tasks_so = "cublas_tasks.so"
+local tasks_h = utils.output_dir .. "/cublas_tasks.h"
+local tasks_so = utils.output_dir .. "/cublas_tasks.so"
 regentlib.save_tasks(tasks_h, tasks_so, nil, nil, nil, nil, false)

@@ -2517,6 +2517,6 @@ do
     end
 end
 
-local tasks_h = "blas_tasks.h"
-local tasks_so = "blas_tasks.so"
+local tasks_h = utils.output_dir .. "/blas_tasks.h"
+local tasks_so = utils.output_dir .. "/blas_tasks.so"
 regentlib.save_tasks(tasks_h, tasks_so, nil, nil, nil, nil, false)

@@ -6,6 +6,7 @@ local utils = {}
 utils.use_gpu = nil
 utils.blas_header = nil
 utils.blas_library = nil
+utils.output_dir = "./"
 
 for k, v in pairs(arg) do
   if v == "--use-gpu" then
@@ -14,6 +15,8 @@ for k, v in pairs(arg) do
     utils.blas_header = arg[k+1]
   elseif v == "--blas-library" then
     utils.blas_library = arg[k+1]
+  elseif v == "--output-dir" then
+    utils.output_dir = arg[k+1]
   end
 end
 

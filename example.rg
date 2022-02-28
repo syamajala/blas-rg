@@ -1,12 +1,8 @@
 import "regent"
 local c = regentlib.c
 
-terralib.linklibrary("/home/seshu/pkg/lib/libcblas.so")
-local cblas = terralib.includec("openblas/cblas.h", {"-I", "/home/seshu/pkg/include"})
-
--- terralib.linklibrary("/scratch2/seshu/intel/oneapi/mkl/latest/lib/intel64/libmkl_intel_lp64.so")
--- terralib.linklibrary("/scratch2/seshu/intel/oneapi/mkl/2022.0.1/lib/intel64/libmkl_rt.so")
--- local cblas = terralib.includec("mkl_cblas.h", {"-I", "/scratch2/seshu/intel/oneapi/mkl/latest/include"})
+terralib.linklibrary("/cm/shared/apps/openblas/0.3.7/lib/libopenblas.so")
+local cblas = terralib.includec("openblas/cblas.h", {"-I", "/cm/shared/apps/openblas/0.3.7/include"})
 
 local blas = terralib.includec("blas_tasks.h", {"-I", "./build"})
 terralib.linklibrary("./build/blas_tasks.so")
