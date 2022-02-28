@@ -18,19 +18,18 @@ set(RegentFlags --blas-header ${BLAS_INCLUDE_DIRS} --blas-library ${BLAS_LIBRARI
 
 add_custom_target(blas_tasks ALL
   DEPENDS blas_tasks.so)
-set(OUTPUTS blas_tasks.so blas_tasks.h cblas_tasks.so cblas_tasks.h)
+set(OUTPUTS blas_tasks.so blas_tasks.h)
 set(SRCS blas.rg blas_tasks.rg cblas.rg utils.rg)
 
 option(USE_CUDA "Enable support for CUDA" OFF)
 if(USE_CUDA)
   message("Building CUBLAS")
   enable_language(CUDA)
-  add_library(context_manager SHARED context_manager.cu)
-  target_link_libraries(context_manager -lcublas)
+  add_library(blas_context_manager SHARED blas_context_manager.cu)
+  target_link_libraries(blas_context_manager -lcublas)
   LIST(APPEND RegentFlags --use-gpu)
-  LIST(APPEND OUTPUTS cublas_tasks.so cublas_tasks.h)
-  LIST(APPEND SRCS context_manager.cu context_manager.h cublas.rg)
-  add_dependencies(blas_tasks context_manager)
+  LIST(APPEND SRCS blas_context_manager.cu blas_context_manager.h cublas.rg)
+  add_dependencies(blas_tasks blas_context_manager)
 endif()
 
 add_custom_command(OUTPUT blas_tasks.so

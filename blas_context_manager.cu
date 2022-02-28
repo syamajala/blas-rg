@@ -1,6 +1,6 @@
-#include "context_manager.h"
+#include "blas_context_manager.h"
 
-cublasHandle_t get_handle()
+cublasHandle_t get_blas_handle()
 {
   static __thread cublasHandle_t handle;
 

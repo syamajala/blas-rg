@@ -1392,7 +1392,3 @@ terra dtrsm_cpu_terra(
 	[get_raw_ptr_factory(2, double, rectB, prB, fldB, rawB, double_ptr)]
 	cblas.cblas_dtrsm(layout, Side, Uplo, TransA, Diag, M, N, alpha, rawA.ptr, rawA.offset, rawB.ptr, rawB.offset)
 end
-
-local tasks_h = utils.output_dir .. "/cblas_tasks.h"
-local tasks_so = utils.output_dir .. "/cblas_tasks.so"
-regentlib.save_tasks(tasks_h, tasks_so, nil, nil, nil, nil, false)

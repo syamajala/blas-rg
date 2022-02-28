@@ -7,7 +7,7 @@ local cblas = terralib.includec("openblas/cblas.h", {"-I", "/cm/shared/apps/open
 local blas = terralib.includec("blas_tasks.h", {"-I", "./build"})
 terralib.linklibrary("./build/blas_tasks.so")
 
-terralib.linklibrary("./build/libcontext_manager.so")
+terralib.linklibrary("./build/libblas_context_manager.so")
 
 require("blas")
 
