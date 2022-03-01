@@ -5,7 +5,7 @@ terralib.linklibrary("/cm/shared/apps/openblas/0.3.7/lib/libopenblas.so")
 local cblas = terralib.includec("openblas/cblas.h", {"-I", "/cm/shared/apps/openblas/0.3.7/include"})
 
 local blas = terralib.includec("blas_tasks.h", {"-I", "./build"})
-terralib.linklibrary("./build/blas_tasks.so")
+terralib.linklibrary("./build/libblas_tasks.so")
 
 terralib.linklibrary("./build/libblas_context_manager.so")
 

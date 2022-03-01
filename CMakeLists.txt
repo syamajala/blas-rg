@@ -17,8 +17,8 @@ find_path(BLAS_INCLUDE_DIRS cblas.h
 set(RegentFlags --blas-header ${BLAS_INCLUDE_DIRS} --blas-library ${BLAS_LIBRARIES} --output-dir ${PROJECT_BINARY_DIR} -fseparate 1)
 
 add_custom_target(blas_tasks ALL
-  DEPENDS blas_tasks.so)
-set(OUTPUTS blas_tasks.so blas_tasks.h)
+  DEPENDS libblas_tasks.so)
+set(OUTPUTS libblas_tasks.so blas_tasks.h)
 set(SRCS blas.rg blas_tasks.rg cblas.rg utils.rg)
 
 option(USE_CUDA "Enable support for CUDA" OFF)
@@ -32,7 +32,7 @@ if(USE_CUDA)
   add_dependencies(blas_tasks blas_context_manager)
 endif()
 
-add_custom_command(OUTPUT blas_tasks.so
+add_custom_command(OUTPUT libblas_tasks.so
   COMMAND regent.py blas_tasks.rg ${RegentFlags}
   DEPENDS ${SRCS}
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
